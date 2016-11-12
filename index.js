@@ -38,9 +38,15 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 	var carBufferRoutes = utils.getBuffersByCar(hasGoToBufferCars, distances);
 	// console.log(carBufferRoutes);
 	// 开始计算各车到buffer的时间序列
-	var fixedBufferRoutes = utils.fixedBufferRoutes(carBufferRoutes, bufferCars, distances);
 	// buffer 点的处理
+	var fixedBufferRoutes = utils.fixedBufferRoutes(carBufferRoutes, bufferCars, distances);
+	// 将各个buffer的等待时间添加大 hasGoToBufferCars 对象中
 
+	// 输出结果
+
+	// // test 
+	// var testResul = utils.getBufferNeedTimeByVolume(100, bufferCars, distances);
+	// console.log(testResul, "====")
 
 });
 
