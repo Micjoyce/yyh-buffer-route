@@ -41,7 +41,7 @@ module.exports = {
 		}
 		return result;
 	},
-	getDistance(firestKey, lastKey, distances) {
+	getDistance(firstKey, lastKey, distances) {
 		if (!firstKey || !lastKey || !distances) {
 			return console.log(`firstKey:${firstKey},lastKey: ${lastKey},distances:${distances}`);
 		}
@@ -97,6 +97,7 @@ module.exports = {
 			car.supVolume = 0;
 			car.notEnough = 0;
 			car.lastFinshPoint = car.ownerSupply;
+			car.bufferNeedVolumes = [];
 		}
 		for (var i = 0; i < 7; i++) {
 			// 如果最后到达点等于routes的最后一个到达点，且notEnough等于0 则结束循环
@@ -154,18 +155,21 @@ module.exports = {
 			if (isLastPoint) {
 				car.volume = 0;
 				car.supVolume += car.notEnough;
-				car.notEnough = 0;
 				car.lastFinshPoint = route;
+				car.bufferNeedVolumes.push(car.notEnough);
+				car.notEnough = 0;
 			} else {
 				car.volume = car.load - car.notEnough;
 				car.supVolume += car.notEnough;
 				car.notEnough = 0;
 				car.lastFinshPoint = route;
+				car.bufferNeedVolumes.push(car.load);
 			}
 		} else {
 			car.volume = car.load;
 			car.supVolume += car.volume;
 			car.notEnough -= car.load; 
+			car.bufferNeedVolumes.push(car.load);
 		}
 		return car;
 	},
@@ -181,6 +185,101 @@ module.exports = {
 			goCars.push(routeCar);
 		});
 		return goCars;
+	},
+	// 给出一个routes 计算这个routes的时间
+	calcRoutesTime(routes, distances) {
+		// [ 'Supply2', 'P8', 'Buffer1', 'P8', 'P10', 'Buffer1', 'P10', 'P9' ]
+		if (!_.isArray(routes)) {
+			return console.log(`routes: ${routes} Error`);
+		}
+		if (routes.length < 2) {
+			console.log("routes length Error, routes length must greater than 2, routes:${routes}");
+			return 0;
+		}
+		var self = this;
+		var times = 0;
+		for (var i = 1; i < routes.length; i++) {
+			var time = self.getDistance(routes[i-1], routes[i], distances);
+			if (!time) {
+				console.log(`Error, calcRoutesTime, time: ${time}`);
+			} else {
+				times += time;
+			}
+		}
+		return times;
+	},
+	getBufferByRoutes(car, distances) {
+		var self = this;
+		var bufferRoute = [];
+		var routes = car.arrives;
+		var bufferCount = 0;
+		for (var i = 0; i < routes.length; i++) {
+			var route = routes[i];
+			if (route === bufferName) {
+				bufferCount ++;
+				var rts =  routes.slice(0, i+1);
+				var time = self.calcRoutesTime(rts, distances)
+				bufferRoute.push({
+					time: time,
+					routes: rts,
+					carCode: car.carCode,
+					bufferNeedVolume: car.bufferNeedVolumes[bufferCount - 1],
+				});
+			}
+		}
+		return bufferRoute;
+	},
+	getBuffersByCar(hasGoToBufferCars, distances){
+		if (!_.isArray(hasGoToBufferCars)) {
+			return console.log(`setBufferTicks: ${hasGoToBufferCars} Error`);
+		}
+		var self = this;
+		var bufferRoutes = [];
+		for (var i = 0; i < hasGoToBufferCars.length; i++) {
+			var car = hasGoToBufferCars[i];
+			// 找到所有到达buffer的点，及其路由
+			var bfRoutes = self.getBufferByRoutes(car, distances);
+			bufferRoutes = bufferRoutes.concat(bfRoutes);
+		}
+		// 按照时间排序（升序）
+		bufferRoutes.sort(function(a, b){
+			return a.time > b.time;
+		});
+		return bufferRoutes;
+	},
+	initBufferCars(bufferCars, distances) {
+		if (!_.isArray(bufferCars)) {
+			return console.log(`Error initBufferCars, bufferCars${bufferCars}`);
+		}
+		var self = this;
+		var initBufferCars = [];
+		bufferCars.forEach(function(car){
+			// getDistance
+			var dis = self.getDistance(car.ownerSupply, bufferName, distances);
+			car.goBufferTime = dis;
+			initBufferCars.push(car);
+		});
+		return initBufferCars;
+	},
+	getBufferVolumeByTime(time, bufferCars, distances) {
+		// initBufferCars[{car.goBufferTime}]
+		var self = this;
+		var initBufferCars = self.initBufferCars(bufferCars, distances);
+		console.log(initBufferCars);
+
+	},
+	fixedBufferRoutes(carBufferRoutes, bufferCars, distances) {
+		if (!carBufferRoutes || !bufferCars || !distances) {
+			return console.log(`fixedBufferRoutes Error`);
+		}
+		var self = this;
+		var resultCarBufferRoutes = [];
+		var bufferSupVolume = 0;
+		for (var i = 0; i < carBufferRoutes.length; i++) {
+			var brt = carBufferRoutes[i];
+			// 传入一个时间点获取bufferCars的量
+			var bufferVolume = self.getBufferVolumeByTime(brt.time, bufferCars, distances);
+		}
 	}
 }
 

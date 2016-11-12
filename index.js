@@ -6,6 +6,8 @@ var _ = require('lodash')
 
 var disCsvName = './distances.csv';
 
+var bufferName = "Buffer1";
+
 
 // init cars route,设置各车所要走的路径
 cars = utils.initCarsRoutes(cars, initResult);
@@ -24,16 +26,22 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 
 	// 找出所有车的路径
 	var goCars = utils.findWays(points, pointCars, distances);
-	// 开始计算各车到buffer所需要增加的时间
+	// 找出没有到过buffer的cars
+	var noBufferCars = _.filter(goCars, function(car) {
+		return car.arrives.indexOf(bufferName) === -1;
+	});
+	// 找出没有到过buffer的cars
+	var hasGoToBufferCars = _.filter(goCars, function(car) {
+		return car.arrives.indexOf(bufferName) !== -1;
+	});
+	// 获取到达buffer的routes数组，并按照升序排序
+	var carBufferRoutes = utils.getBuffersByCar(hasGoToBufferCars, distances);
+	// console.log(carBufferRoutes);
+	// 开始计算各车到buffer的时间序列
+	var fixedBufferRoutes = utils.fixedBufferRoutes(carBufferRoutes, bufferCars, distances);
+	// buffer 点的处理
 
-	// // 找出不需要继续进行的车辆,标志为notEnough等于0的车辆
-	// var finishCars = _.filter(goCars, function(car) {
-	// 	return car.notEnough === 0;
-	// });
-	// //将不需要继续进行的车辆保存在resultCars中
-	// var needToGoCars = _.filter(goCars, function(car) {
-	// 	return car.notEnough > 0;
-	// });
+
 });
 
 // var stopFlag = false;
