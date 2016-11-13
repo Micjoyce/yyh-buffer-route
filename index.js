@@ -36,18 +36,28 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 	});
 	// 获取到达buffer的routes数组，并按照升序排序
 	var carBufferRoutes = utils.getBuffersByCar(hasGoToBufferCars, distances);
-	// console.log(carBufferRoutes);
 	// 开始计算各车到buffer的时间序列
 	// buffer 点的处理
 	var fixedBufferRoutes = utils.fixedBufferRoutes(carBufferRoutes, bufferCars, distances);
 	// 将各个buffer的等待时间添加大 hasGoToBufferCars 对象中
 
-	// 输出结果
-
-	// // test 
-	// var testResul = utils.getBufferNeedTimeByVolume(100, bufferCars, distances);
-	// console.log(testResul, "====")
-
+	var fixWaitTimeForGoToBufferCars = utils.fixWaitTimeForGoToBufferCars(hasGoToBufferCars, fixedBufferRoutes);
+	// 数据结构
+	// { carCode: 'S1-A-1',
+	// type: 'A',
+	// load: 9,
+	// ownerSupply: 'Supply1',
+	// routes: [ 'P5', 'P3', 'P1' ],
+	// arrives: [ 'Supply1', 'P5', 'P3', 'P1', 'Buffer1', 'P1', 'Buffer1', 'P1' ],
+	// volume: 0,
+	// supVolume: 21,
+	// notEnough: 0,
+	// lastFinshPoint: 'P1',
+	// bufferNeedVolumes: [ 9, 3 ],
+	// waitTimes: [ 0.29999999999999716, 0 ] }
+	// 输出结果，计算出总时间, 总时间只和需要达到受灾点的时间有关。
+	var maxTime = utils.getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances);
+	console.log(maxTime)
 });
 
 // var stopFlag = false;

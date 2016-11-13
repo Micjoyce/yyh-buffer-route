@@ -298,23 +298,47 @@ module.exports = {
 		// bufferVolume 为到某个时间点的量
 		return bufferVolume;
 	},
+	generatorTimeTicks(totalNeedVolume, initBufferCars) {
+		if (!totalNeedVolume || !initBufferCars) {
+			return console.log(`generatorTimeTicks Error`);
+		}
+		var timeSerie = [];
+		initBufferCars.forEach(function(car) {
+			var count = Math.ceil(totalNeedVolume / car.load);
+			for (var i = 0; i < count; i++) {
+				var time = (i - 1)*car.goBufferTime + car.goBufferTime;
+				timeSerie.push(time);
+			}
+		});
+		// 按照省需排序返回
+		timeSerie.sort(function(a, b){
+			return a - b;
+		});
+		// 移除0时刻
+		timeSerie = _.filter(timeSerie, function(tick) {
+			return tick !== 0;
+		});
+		return timeSerie;
+	},
 	getBufferNeedTimeByVolume(totalNeedVolume, bufferCars, distances){
 		if (!totalNeedVolume || !bufferCars || !distances) {
 			return console.log(`getBufferNeedTimeByVolume Error`);
 		}
 		var self = this;
 		var initBufferCars = self.initBufferCars(bufferCars, distances);
-		// 找出运输量最小的那辆车
-		var minLoadCar = _.minBy(initBufferCars, function(car) {
-			return car.load;
-		});
-		// 计算最小的那辆车需要走多少次
-		var maxCount = Math.ceil(totalNeedVolume / minLoadCar.load);
-		for (var i = 0; i < maxCount; i++) {
-			var time = (i + 1) * minLoadCar.goBufferTime;
-			var volume = self.getBufferVolumeByTime(brt.time, bufferCars, distances);
-
+		// 假设各车单独运送到达需求量货物时需要多少次，生成一个时间序列
+		var timeSerie = self.generatorTimeTicks(totalNeedVolume, initBufferCars);
+		var needTime = 0;
+		for (var i = 0; i < timeSerie.length; i++) {
+			var time = timeSerie[i]
+			var volume = self.getBufferVolumeByTime(time, bufferCars, distances);
+			if (totalNeedVolume < volume) {
+				needTime = time;
+				break;
+			}
 		}
+		return needTime;
+
 	},
 	fixedBufferRoutes(carBufferRoutes, bufferCars, distances) {
 		// carBufferRoute
@@ -343,16 +367,49 @@ module.exports = {
 				resultCarBufferRoutes.push(brt);
 			} else {
 				// 需要进行时间延迟处理
-				console.log("Need delay process");
+				// console.log("Need delay process");
 				var needTime = self.getBufferNeedTimeByVolume(totalNeedVolume, bufferCars, distances);
-				// ------
-				// waitTime = needTime - brt.time
-				// 
+				waitTime = needTime - brt.time
+				
 				brt.waitTime = waitTime;
 				resultCarBufferRoutes.push(brt);
 			}
 		}
 		return resultCarBufferRoutes;
+	},
+	fixWaitTimeForGoToBufferCars(hasGoToBufferCars, fixedBufferRoutes) {
+		if (!hasGoToBufferCars ||  !fixedBufferRoutes ) {
+			return console.log(`fixWaitTimeForGoToBufferCars Error,hasGoToBufferCars: ${hasGoToBufferCars}, fixedBufferRoutes: ${fixedBufferRoutes}`);
+		}
+		// 找出存在buffer的车辆
+		var fixWaitTimeCars = [];
+		hasGoToBufferCars.forEach(function(car) {
+			var waitTimes = _.map(_.filter(fixedBufferRoutes, function(route){
+				return route.carCode === car.carCode;
+			}),"waitTime");
+			car.waitTimes = waitTimes;
+			fixWaitTimeCars.push(car);
+		});
+		return fixWaitTimeCars;
+	},
+	getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances) {
+		var maxTime = 0;
+		var self = this;
+		fixWaitTimeForGoToBufferCars.forEach(function(car) {
+			var routeTime = self.calcRoutesTime(car.arrives, distances);
+			var waitTimes = _.sum(car.waitTimes);
+			var totalTime = routeTime + waitTimes;
+			if (totalTime > maxTime) {
+				maxTime = totalTime
+			}
+		});
+		noBufferCars.forEach(function(car) {
+			var routeTime = self.calcRoutesTime(car.arrives, distances);
+			if (routeTime > maxTime) {
+				maxTime = routeTime
+			}
+		});
+		return maxTime;
 	}
 }
 
