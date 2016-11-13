@@ -2,15 +2,6 @@ module.exports = [
 	{
 		code: "P1",
 		needVolume: 13,
-		// update data,
-		// state: [{
-		// 	carCode: ,
-		// 	carLoad: ,
-		// 	carLeaveLoad: ,
-		// 	beforePoint: ,
-		// 	nextPoint: ,
-		// 	time: ,
-		// }],
 	},
 	{
 		code: "P2",

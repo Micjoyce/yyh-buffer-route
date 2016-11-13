@@ -4,14 +4,6 @@ module.exports = [
 		type: "A",
 		load: 9,
 		ownerSupply: "Supply1",
-		// arrivePoint:  
-		// ticks: [
-		// 	{	
-		// 		point: ,
-		// 		time: ,
-		// 		totalTime: ,
-		// 	}
-		// ]
 	},
 	{
 		carCode: 'S1-A-2',
