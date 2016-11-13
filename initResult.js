@@ -1,4 +1,3 @@
-// S2A1, S2S1-A-1, S2C2, S1A1, S1A2, S1B1, S1S1-A-1
 module.exports = [
 	{	
 		pCode: "P1",

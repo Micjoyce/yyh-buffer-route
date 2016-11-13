@@ -1,12 +1,16 @@
+var _ = require('lodash')
 var utils = require('./utils');
+var config = require('./config');
+// 路程数据需要定时给出的
+var disCsvName = './distances.csv';
+
+// cars,initResult,points可以动态给定达到优化的过程
 var cars = require('./cars');
 var initResult = require('./initResult');
 var points = require('./points');
-var _ = require('lodash')
 
-var disCsvName = './distances.csv';
-
-var bufferName = "Buffer1";
+// 基本配置文件
+var bufferName = config.bufferName;
 
 
 // init cars route,设置各车所要走的路径
@@ -59,11 +63,3 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 	var maxTime = utils.getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances);
 	console.log(maxTime)
 });
-
-// var stopFlag = false;
-// while(stopFlag === false){
-// // 	//执行一次循环计算出所有车的状态之，并且更新状态树
-	
-// // 	// 在函数中遍历所有车辆更新状态，以及point，和initbuffer的状态。
-
-// }

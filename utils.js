@@ -2,7 +2,8 @@ var _ = require('lodash')
 var Converter = require("csvtojson").Converter;
 var converter = new Converter({});
 var combinFlag = "-";
-var bufferName = "Buffer1";
+var config = require('./config');
+var bufferName = config.bufferName;
 
 module.exports = {
 	csvToJson(fileUrl, callback) {
