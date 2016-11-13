@@ -6,17 +6,21 @@ var disCsvName = './distances.csv';
 
 // cars,initResult,points可以动态给定达到优化的过程
 var cars = require('./cars');
-var initResult = require('./initResult');
 var points = require('./points');
 
 // 基本配置文件
 var bufferName = config.bufferName;
 
-
-// init cars route,设置各车所要走的路径
-cars = utils.initCarsRoutes(cars, initResult);
-
 utils.csvToJson(disCsvName, function(err, jsonDis){
+	// 生成随机解
+	// initResult可以动态给定达到优化的过程
+	var initResult = require('./initResult');
+
+	// 根据初始解进行迭代
+	var initResult = utils.iterationResult(initResult, cars);
+
+	// init cars route,设置各车所要走的路径
+	var initResult = utils.initCarsRoutes(cars, initResult);
 	var resultCars = [];
 	 // 初始化距离数据
 	var distances = utils.initPointDistance(jsonDis);
