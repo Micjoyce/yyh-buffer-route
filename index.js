@@ -1,5 +1,6 @@
 var _ = require('lodash')
 var utils = require('./utils');
+var ANutils = require('./annealAlgorithm');
 var config = require('./config');
 // 路程数据需要定时给出的
 var disCsvName = './distances.csv';
@@ -17,19 +18,27 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 	// initResult可以动态给定达到优化的过程
 	var initResult = require('./initResult');
 
-	var finalResult = 0;
-	var lastTimeResult = 0;
-	var finalPointResult = [];
-	var lastPointResult = [];
+	var finalResult = {};
+	var lastTimeResult = {};
+	var stopCount = 0;
 	// 根据初始解进行迭代
-	var len = 50;
-	for (var i = 0; i < len; i++) {
+	for (var i = 0; i < config.iteratorTimes; i++) {
 		// cars,initResult,points可以动态给定达到优化的过程
 		var cars = require('./cars');
 		var points = require('./points');
 
-		// 退火算法
-		initResult = utils.iterationResult(initResult, cars);
+		// 退后算法规则
+		// 初始退火温度为 260
+		// 1、连续达到一定n(7)次结果相同则停止
+		// 2、按照一定的概率接受某个结果 e(-(T前-T后)/260)的温度
+		if (finalResult.points && lastTimeResult.points) {
+			// 退火算法
+			var annealResult = ANutils.annealAlgorithm(finalResult, lastTimeResult, initResult, config.annealDegree)
+			initResult = utils.iterationResult(annealResult, cars);
+		}else {
+			// 前两次不进行退火迭代
+			initResult = utils.iterationResult(initResult, cars);
+		}
 
 		// console.log(finalPointResult, '===', lastPointResult);
 
@@ -78,11 +87,10 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 		var maxTime = utils.getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances);
 
 		// 退火算法赋值
-		lastTimeResult = finalResult;
-		finalResult = maxTime;
+		lastTimeResult.time = finalResult.time;
+		finalResult.time = maxTime;
 
-		lastPointResult = finalPointResult;
-		finalPointResult = initResult;
-
+		lastTimeResult.points = finalResult.points;
+		finalResult.points = initResult;
 	}
 });

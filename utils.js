@@ -1,8 +1,8 @@
 var _ = require('lodash')
+var config = require('./config');
 var Converter = require("csvtojson").Converter;
 var converter = new Converter({});
-var combinFlag = "-";
-var config = require('./config');
+var combinFlag = config.combinFlag;
 var bufferName = config.bufferName;
 
 module.exports = {
