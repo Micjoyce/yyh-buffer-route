@@ -15,7 +15,7 @@ module.exports = {
 		var carCodes = _.map(initResult, "carCode");
 		var findCarPosition = parseInt(Math.random() * carCodes.length);
 		var replaceCarCode = carCodes[findCarPosition];
-		// 如果要替换的车
+		// 如果要替换的车与之前的相同则返回
 		if (originCarCode === replaceCarCode) {
 			return initResult;
 		}
@@ -34,7 +34,7 @@ module.exports = {
 		// 如果存在
 		var point = initResult[replacePosition];
 		point.carCode = originCarCode;
-		if (findExsit.length > 1) {
+		if (findExsit.length > 0) {
 			point.step = findExsit.length + 1;
 		} else {
 			point.step = 1;
@@ -48,6 +48,7 @@ module.exports = {
 		initResult.forEach(function(point, index) {
 			if (point.carCode === carCode) {
 				if (point.step >= init) {
+					init = point.step;
 					position = index;
 				}
 			}
@@ -182,14 +183,14 @@ module.exports = {
 			if (points.length === 0) {
 				car.routes = [];
 				car.goBuffer = true;
-				return;
+			} else {
+				// 对到达点根据 step 字段进行升序排序
+				points.sort(function(itema, itemb){
+					return itema.step > itemb.step;
+				});
+				var routes = _.map(points, 'pCode');
+				car.routes = routes;
 			}
-			// 对到达点更具 step 字段进行排序
-			points.sort(function(itema, itemb){
-				return itema.step > itemb.step;
-			});
-			var routes = _.map(points, 'pCode');
-			car.routes = routes;
 		});
 		return cars;
 	},
@@ -211,28 +212,36 @@ module.exports = {
 			car.lastFinshPoint = car.ownerSupply;
 			car.bufferNeedVolumes = [];
 		}
-		for (var i = 0; i < 7; i++) {
+		// 
+		var stopLoop = true;
+		while(stopLoop) {
 			// 如果最后到达点等于routes的最后一个到达点，且notEnough等于0 则结束循环
 			var isLastPoint = self.isLastPoint(car);
 			if (isLastPoint && car.notEnough === 0) {
-				break;
-			}
-			// 如果存在notEnough 大于0，则说明此车仔这个点需要到达buffer去获取物资，不继续进行下一步运输。
-			if (car.notEnough > 0) {
-				// 需要去一次buffer点进行装载，假设不需要等待，等待时间在最后结果进行添加
-				car  = self.goToBuffer(car);
-			} else{
-				var route = self.getNextRoute(car);
-				var needVolume = _.map(_.filter(points, function(point){
-					return point.code === route;
-				}), 'needVolume')[0];
-				// 更新car的volume
-				car = self.updateCarVolume(car, needVolume, route);
+				stopLoop = false;
+			} else {
+				// 如果存在notEnough 大于0，则说明此车仔这个点需要到达buffer去获取物资，不继续进行下一步运输。
+				if (car.notEnough > 0) {
+					// 需要去一次buffer点进行装载，假设不需要等待，等待时间在最后结果进行添加
+					car  = self.goToBuffer(car);
+				} else{
+					var route = self.getNextRoute(car);
+					var needVolume = _.map(_.filter(points, function(point){
+						return point.code === route;
+					}), 'needVolume')[0];
+					// 更新car的volume
+					car = self.updateCarVolume(car, needVolume, route);
+				}
 			}
 		}
+		// console.log(car.arrives)
 		return car;
 	},
 	getNextRoute(car) {
+		var routeLen = car.routes.length;
+		if (routeLen === 1) {
+			return car.routes[0];
+		}
 		var index = car.routes.indexOf(car.lastFinshPoint);
 		return car.routes[index + 1];
 	},
@@ -267,14 +276,12 @@ module.exports = {
 			if (isLastPoint) {
 				car.volume = 0;
 				car.supVolume += car.notEnough;
-				car.lastFinshPoint = route;
 				car.bufferNeedVolumes.push(car.notEnough);
 				car.notEnough = 0;
 			} else {
 				car.volume = car.load - car.notEnough;
 				car.supVolume += car.notEnough;
 				car.notEnough = 0;
-				car.lastFinshPoint = route;
 				car.bufferNeedVolumes.push(car.load);
 			}
 		} else {
@@ -283,6 +290,7 @@ module.exports = {
 			car.notEnough -= car.load;
 			car.bufferNeedVolumes.push(car.load);
 		}
+		car.lastFinshPoint = route;
 		return car;
 	},
 	findWays(points, pointCars, distances) {
@@ -313,7 +321,7 @@ module.exports = {
 		for (var i = 1; i < routes.length; i++) {
 			var time = self.getDistance(routes[i-1], routes[i], distances);
 			if (!time) {
-				console.log(`Error, calcRoutesTime, time: ${time}`);
+				console.log(`Error, calcRoutesTime, time: ${time}, i-1: ${routes[i-1]}, i:${routes[i]}`);
 			} else {
 				times += time;
 			}

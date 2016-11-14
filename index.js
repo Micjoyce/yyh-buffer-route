@@ -17,6 +17,10 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 	// initResult可以动态给定达到优化的过程
 	var initResult = require('./initResult');
 
+	var finalResult = 0;
+	var lastTimeResult = 0;
+	var finalPointResult = [];
+	var lastPointResult = [];
 	// 根据初始解进行迭代
 	var len = 50;
 	for (var i = 0; i < len; i++) {
@@ -24,10 +28,13 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 		var cars = require('./cars');
 		var points = require('./points');
 
+		// 退火算法
 		initResult = utils.iterationResult(initResult, cars);
-		console.log(initResult)
+
+		// console.log(finalPointResult, '===', lastPointResult);
+
 		// init cars route,设置各车所要走的路径
-		var hello = utils.initCarsRoutes(cars, initResult);
+		cars = utils.initCarsRoutes(cars, initResult);
 
 		var pointCars = _.filter(cars,function(car){
 			return !car.goBuffer;
@@ -69,7 +76,13 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 		// waitTimes: [ 0.29999999999999716, 0 ] }
 		// 输出结果，计算出总时间, 总时间只和需要达到受灾点的时间有关。
 		var maxTime = utils.getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances);
-		itResult.push(maxTime)
+
+		// 退火算法赋值
+		lastTimeResult = finalResult;
+		finalResult = maxTime;
+
+		lastPointResult = finalPointResult;
+		finalPointResult = initResult;
+
 	}
-	console.log(itResult)
 });
