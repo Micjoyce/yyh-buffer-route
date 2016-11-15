@@ -74,6 +74,9 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 				changeDegreeCount = 0;
 			}
 			initResult = utils.iterationResult(annealResult.points, initCars);
+			while (_.uniq(_.map(initResult, "carCode")).length === initCars.length) {
+				initResult = utils.iterationResult(annealResult.points, initCars);
+			}
 		}else {
 			// 前两次不进行退火迭代
 			initResult = utils.iterationResult(initResult, initCars);
@@ -98,6 +101,7 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 		var hasGoToBufferCars = _.filter(goCars, function(car) {
 			return car.arrives.indexOf(bufferName) !== -1;
 		});
+		// console.log(noBufferCars.length, hasGoToBufferCars.length, goCars.length, pointCars.length, bufferCars.length);
 		// 获取到达buffer的routes数组，并按照升序排序
 		var carBufferRoutes = utils.getBuffersByCar(hasGoToBufferCars, distances);
 		// 开始计算各车到buffer的时间序列
