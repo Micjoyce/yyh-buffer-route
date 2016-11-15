@@ -8,7 +8,7 @@ var disCsvName = './distances.csv';
 // 基本配置文件
 var bufferName = config.bufferName;
 
-var itResult = [];
+var allResult = {};
 
 utils.csvToJson(disCsvName, function(err, jsonDis){
 	// 初始化距离数据
@@ -20,9 +20,13 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 
 	var finalResult = {};
 	var lastTimeResult = {};
-	var stopCount = 0;
+	var changeDegreeCount = 0;
+	var timeSerie = [];
+	var loopFlag = true;
+	var annealDegree = config.annealDegree;
 	// 根据初始解进行迭代
-	for (var i = 0; i < config.iteratorTimes; i++) {
+	// for (var i = 0; i < config.iteratorTimes; i++) {
+	while(loopFlag) {
 		// cars,initResult,points可以动态给定达到优化的过程
 		var cars = require('./cars');
 		var points = require('./points');
@@ -32,9 +36,31 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 		// 1、连续达到一定n(7)次结果相同则停止
 		// 2、按照一定的概率接受某个结果 e(-(T前-T后)/260)的温度
 		if (finalResult.points && lastTimeResult.points) {
+			changeDegreeCount ++;
 			// 退火算法
-			var annealResult = ANutils.annealAlgorithm(finalResult, lastTimeResult, initResult, config.annealDegree)
-			initResult = utils.iterationResult(annealResult, cars);
+			var annealResult = ANutils.annealAlgorithm(finalResult, lastTimeResult, initResult, annealDegree)
+			// finalResult = annealResult;
+			// console.log(finalResult.time, lastTimeResult.time, annealResult.time);
+			// console.log(annealResult.points)
+
+			// 1、将接受的结果添加到timeSerie中进行检测是否连续几次达到的停止判断
+			timeSerie.push(annealResult.time);
+			// 停止判断
+			loopFlag = ANutils.stopDirection(timeSerie);
+
+			// 输出最终结果
+			if (loopFlag === false) {
+				allResult = annealResult;
+				allResult.degree = annealDegree;
+			}
+			// 改变退火温度
+			if (changeDegreeCount >= config.iteratorTimes) {
+				annealDegree = annealDegree * config.annealFactor;
+				changeDegreeCount = 0;
+			}
+
+
+			initResult = utils.iterationResult(annealResult.points, cars);
 		}else {
 			// 前两次不进行退火迭代
 			initResult = utils.iterationResult(initResult, cars);
@@ -84,7 +110,7 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 		// bufferNeedVolumes: [ 9, 3 ],
 		// waitTimes: [ 0.29999999999999716, 0 ] }
 		// 输出结果，计算出总时间, 总时间只和需要达到受灾点的时间有关。
-		var maxTime = utils.getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances);
+		var maxTime = Number(utils.getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances).toFixed(config.digital));
 
 		// 退火算法赋值
 		lastTimeResult.time = finalResult.time;
@@ -93,4 +119,7 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 		lastTimeResult.points = finalResult.points;
 		finalResult.points = initResult;
 	}
+
+	// 输出结果
+	console.log(allResult);
 });

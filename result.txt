@@ -1,0 +1,285 @@
+{ time: 0,
+  points: 
+   [ { pCode: 'P1', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P2', carCode: 'S1-A-2', step: 2 },
+     { pCode: 'P3', carCode: 'S1-A-1', step: 1 },
+     { pCode: 'P4', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P5', carCode: 'S1-B-1', step: 3 },
+     { pCode: 'P6', carCode: 'S1-A-2', step: 1 },
+     { pCode: 'P7', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P8', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P9', carCode: 'S1-A-1', step: 3 },
+     { pCode: 'P10', carCode: 'S1-A-1', step: 2 },
+     { pCode: 'P11', carCode: 'S1-B-1', step: 2 } ],
+  degree: 208 }
+
+{ time: 0,
+  points: 
+   [ { pCode: 'P1', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P2', carCode: 'S2-A-1', step: 3 },
+     { pCode: 'P3', carCode: 'S1-C-1', step: 1 },
+     { pCode: 'P4', carCode: 'S2-A-1', step: 2 },
+     { pCode: 'P5', carCode: 'S1-A-1', step: 1 },
+     { pCode: 'P6', carCode: 'S1-A-2', step: 1 },
+     { pCode: 'P7', carCode: 'S1-A-2', step: 2 },
+     { pCode: 'P8', carCode: 'S1-C-1', step: 2 },
+     { pCode: 'P9', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P10', carCode: 'S2-A-1', step: 4 },
+     { pCode: 'P11', carCode: 'S2-C-1', step: 2 } ],
+  degree: 208 }
+
+{ time: 916,
+  points: 
+   [ { pCode: 'P1', carCode: 'S1-A-1', step: 1 },
+     { pCode: 'P2', carCode: 'S1-A-1', step: 2 },
+     { pCode: 'P3', carCode: 'S1-C-1', step: 2 },
+     { pCode: 'P4', carCode: 'S2-C-1', step: 2 },
+     { pCode: 'P5', carCode: 'S1-C-1', step: 3 },
+     { pCode: 'P6', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P7', carCode: 'S1-C-1', step: 1 },
+     { pCode: 'P8', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P9', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P10', carCode: 'S1-A-2', step: 1 },
+     { pCode: 'P11', carCode: 'S1-A-2', step: 2 } ],
+  degree: 260 }
+
+{ time: 689.3,
+  points: 
+   [ { pCode: 'P1', carCode: 'S1-A-2', step: 3 },
+     { pCode: 'P2', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P3', carCode: 'S1-C-1', step: 2 },
+     { pCode: 'P4', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P5', carCode: 'S1-A-1', step: 1 },
+     { pCode: 'P6', carCode: 'S1-A-2', step: 2 },
+     { pCode: 'P7', carCode: 'S1-C-1', step: 1 },
+     { pCode: 'P8', carCode: 'S1-A-2', step: 1 },
+     { pCode: 'P9', carCode: 'S1-A-2', step: 4 },
+     { pCode: 'P10', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P11', carCode: 'S1-A-1', step: 2 } ],
+  degree: 260 }
+
+{ time: 1156.3,
+  points: 
+   [ { pCode: 'P1', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P2', carCode: 'S2-C-2', step: 3 },
+     { pCode: 'P3', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P4', carCode: 'S1-A-2', step: 1 },
+     { pCode: 'P5', carCode: 'S1-A-1', step: 1 },
+     { pCode: 'P6', carCode: 'S1-C-1', step: 2 },
+     { pCode: 'P7', carCode: 'S1-C-1', step: 1 },
+     { pCode: 'P8', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P9', carCode: 'S1-B-1', step: 2 },
+     { pCode: 'P10', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P11', carCode: 'S2-C-2', step: 2 } ],
+  degree: 208 }
+
+^[[A{ time: 2604.8,
+  points: 
+   [ { pCode: 'P1', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P2', carCode: 'S2-A-1', step: 3 },
+     { pCode: 'P3', carCode: 'S1-C-1', step: 2 },
+     { pCode: 'P4', carCode: 'S1-C-1', step: 3 },
+     { pCode: 'P5', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P6', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P7', carCode: 'S1-C-1', step: 1 },
+     { pCode: 'P8', carCode: 'S1-B-1', step: 2 },
+     { pCode: 'P9', carCode: 'S1-B-1', step: 3 },
+     { pCode: 'P10', carCode: 'S1-A-1', step: 1 },
+     { pCode: 'P11', carCode: 'S2-A-1', step: 2 } ],
+  degree: 208 }
+
+{ time: 478.8,
+  points: 
+   [ { pCode: 'P1', carCode: 'S1-A-2', step: 2 },
+     { pCode: 'P2', carCode: 'S1-A-2', step: 4 },
+     { pCode: 'P3', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P4', carCode: 'S1-A-2', step: 1 },
+     { pCode: 'P5', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P6', carCode: 'S1-A-2', step: 5 },
+     { pCode: 'P7', carCode: 'S1-A-2', step: 3 },
+     { pCode: 'P8', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P9', carCode: 'S2-A-1', step: 2 },
+     { pCode: 'P10', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P11', carCode: 'S1-C-1', step: 1 } ],
+  degree: 208 }
+
+{ time: 777.5,
+  points: 
+   [ { pCode: 'P1', carCode: 'S1-C-1', step: 1 },
+     { pCode: 'P2', carCode: 'S1-A-1', step: 1 },
+     { pCode: 'P3', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P4', carCode: 'S2-C-1', step: 2 },
+     { pCode: 'P5', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P6', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P7', carCode: 'S1-A-1', step: 2 },
+     { pCode: 'P8', carCode: 'S1-A-2', step: 1 },
+     { pCode: 'P9', carCode: 'S1-A-1', step: 3 },
+     { pCode: 'P10', carCode: 'S1-B-1', step: 2 },
+     { pCode: 'P11', carCode: 'S2-C-2', step: 1 } ],
+  degree: 208 }
+
+^[[A{ time: 526,
+  points: 
+   [ { pCode: 'P1', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P2', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P3', carCode: 'S1-A-2', step: 2 },
+     { pCode: 'P4', carCode: 'S2-C-2', step: 2 },
+     { pCode: 'P5', carCode: 'S1-A-1', step: 1 },
+     { pCode: 'P6', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P7', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P8', carCode: 'S1-C-1', step: 1 },
+     { pCode: 'P9', carCode: 'S2-A-1', step: 2 },
+     { pCode: 'P10', carCode: 'S1-C-1', step: 2 },
+     { pCode: 'P11', carCode: 'S1-A-2', step: 1 } ],
+  degree: 208 }
+
+{ time: 718.3,
+  points: 
+   [ { pCode: 'P1', carCode: 'S1-C-1', step: 1 },
+     { pCode: 'P2', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P3', carCode: 'S2-A-1', step: 2 },
+     { pCode: 'P4', carCode: 'S2-C-2', step: 2 },
+     { pCode: 'P5', carCode: 'S2-C-2', step: 3 },
+     { pCode: 'P6', carCode: 'S1-C-1', step: 2 },
+     { pCode: 'P7', carCode: 'S1-A-2', step: 2 },
+     { pCode: 'P8', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P9', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P10', carCode: 'S1-A-2', step: 1 },
+     { pCode: 'P11', carCode: 'S2-A-1', step: 3 } ],
+  degree: 208 }
+
+{ time: 1265,
+  points: 
+   [ { pCode: 'P1', carCode: 'S1-B-1', step: 3 },
+     { pCode: 'P2', carCode: 'S1-A-2', step: 2 },
+     { pCode: 'P3', carCode: 'S2-C-2', step: 2 },
+     { pCode: 'P4', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P5', carCode: 'S1-A-1', step: 1 },
+     { pCode: 'P6', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P7', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P8', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P9', carCode: 'S1-B-1', step: 2 },
+     { pCode: 'P10', carCode: 'S1-A-2', step: 1 },
+     { pCode: 'P11', carCode: 'S2-C-1', step: 2 } ],
+  degree: 208 }
+
+{ time: 297.7,
+  points: 
+   [ { pCode: 'P1', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P2', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P3', carCode: 'S1-A-1', step: 2 },
+     { pCode: 'P4', carCode: 'S1-A-1', step: 3 },
+     { pCode: 'P5', carCode: 'S1-A-1', step: 1 },
+     { pCode: 'P6', carCode: 'S2-C-1', step: 3 },
+     { pCode: 'P7', carCode: 'S2-C-1', step: 4 },
+     { pCode: 'P8', carCode: 'S2-C-1', step: 2 },
+     { pCode: 'P9', carCode: 'S1-A-2', step: 1 },
+     { pCode: 'P10', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P11', carCode: 'S1-A-2', step: 2 } ],
+  degree: 260 }
+
+^[[A{ time: 0,
+  points: 
+   [ { pCode: 'P1', carCode: 'S1-A-1', step: 2 },
+     { pCode: 'P2', carCode: 'S1-A-2', step: 1 },
+     { pCode: 'P3', carCode: 'S1-B-1', step: 2 },
+     { pCode: 'P4', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P5', carCode: 'S1-A-1', step: 1 },
+     { pCode: 'P6', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P7', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P8', carCode: 'S2-A-1', step: 2 },
+     { pCode: 'P9', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P10', carCode: 'S1-C-1', step: 1 },
+     { pCode: 'P11', carCode: 'S1-A-1', step: 3 } ],
+  degree: 208 }
+
+^[[A{ time: 0,
+  points: 
+   [ { pCode: 'P1', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P2', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P3', carCode: 'S1-B-1', step: 2 },
+     { pCode: 'P4', carCode: 'S2-A-1', step: 3 },
+     { pCode: 'P5', carCode: 'S1-A-1', step: 3 },
+     { pCode: 'P6', carCode: 'S2-A-1', step: 2 },
+     { pCode: 'P7', carCode: 'S1-A-1', step: 2 },
+     { pCode: 'P8', carCode: 'S1-A-1', step: 1 },
+     { pCode: 'P9', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P10', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P11', carCode: 'S2-C-2', step: 2 } ],
+  degree: 166.4 }
+
+^[[A{ time: 1579.7,
+  points: 
+   [ { pCode: 'P1', carCode: 'S1-A-2', step: 2 },
+     { pCode: 'P2', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P3', carCode: 'S1-C-1', step: 3 },
+     { pCode: 'P4', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P5', carCode: 'S1-A-2', step: 3 },
+     { pCode: 'P6', carCode: 'S1-A-2', step: 1 },
+     { pCode: 'P7', carCode: 'S1-C-1', step: 1 },
+     { pCode: 'P8', carCode: 'S1-C-1', step: 2 },
+     { pCode: 'P9', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P10', carCode: 'S1-C-1', step: 4 },
+     { pCode: 'P11', carCode: 'S1-B-1', step: 2 } ],
+  degree: 208 }
+
+{ time: 1251,
+  points: 
+   [ { pCode: 'P1', carCode: 'S2-C-2', step: 2 },
+     { pCode: 'P2', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P3', carCode: 'S1-A-1', step: 1 },
+     { pCode: 'P4', carCode: 'S1-B-1', step: 2 },
+     { pCode: 'P5', carCode: 'S1-B-1', step: 4 },
+     { pCode: 'P6', carCode: 'S1-C-1', step: 1 },
+     { pCode: 'P7', carCode: 'S1-A-1', step: 2 },
+     { pCode: 'P8', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P9', carCode: 'S1-B-1', step: 3 },
+     { pCode: 'P10', carCode: 'S1-A-1', step: 3 },
+     { pCode: 'P11', carCode: 'S2-C-2', step: 1 } ],
+  degree: 260 }
+
+{ time: 1017.6,
+  points: 
+   [ { pCode: 'P1', carCode: 'S2-C-2', step: 2 },
+     { pCode: 'P2', carCode: 'S1-A-2', step: 3 },
+     { pCode: 'P3', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P4', carCode: 'S1-A-2', step: 2 },
+     { pCode: 'P5', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P6', carCode: 'S1-B-1', step: 2 },
+     { pCode: 'P7', carCode: 'S2-A-1', step: 2 },
+     { pCode: 'P8', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P9', carCode: 'S1-A-2', step: 1 },
+     { pCode: 'P10', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P11', carCode: 'S1-C-1', step: 1 } ],
+  degree: 166.4 }
+
+{ time: 713.3,  －－－－－－－－－－>时间
+  points:       －－－－－－－－－－>路径
+   [ { pCode: 'P1', carCode: 'S1-C-1', step: 3 },
+     { pCode: 'P2', carCode: 'S1-C-1', step: 1 },
+     { pCode: 'P3', carCode: 'S2-C-1', step: 2 },
+     { pCode: 'P4', carCode: 'S1-C-1', step: 2 },
+     { pCode: 'P5', carCode: 'S2-C-1', step: 3 },
+     { pCode: 'P6', carCode: 'S1-A-1', step: 2 },
+     { pCode: 'P7', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P8', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P9', carCode: 'S1-A-1', step: 1 },
+     { pCode: 'P10', carCode: 'S2-C-2', step: 2 },
+     { pCode: 'P11', carCode: 'S2-C-2', step: 1 } ],
+  degree: 260 } －－－－－－－－－－－－－－> 温度
+
+{ time: 1962.8,
+  points: 
+   [ { pCode: 'P1', carCode: 'S2-C-1', step: 2 },
+     { pCode: 'P2', carCode: 'S1-B-1', step: 1 },
+     { pCode: 'P3', carCode: 'S2-A-1', step: 2 },
+     { pCode: 'P4', carCode: 'S2-C-2', step: 1 },
+     { pCode: 'P5', carCode: 'S1-A-1', step: 2 },
+     { pCode: 'P6', carCode: 'S2-A-1', step: 3 },
+     { pCode: 'P7', carCode: 'S1-C-1', step: 1 },
+     { pCode: 'P8', carCode: 'S2-A-1', step: 1 },
+     { pCode: 'P9', carCode: 'S1-A-1', step: 3 },
+     { pCode: 'P10', carCode: 'S2-C-1', step: 1 },
+     { pCode: 'P11', carCode: 'S1-A-1', step: 1 } ],
+  degree: 208 }
+
