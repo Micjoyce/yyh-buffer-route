@@ -173,9 +173,10 @@ module.exports = {
 		if (!cars || !initResult) {
 			return console.log(`Error: cars: ${cars}, initResult: ${initResult}`);
 		}
+		var calcCars = [].concat(cars);
 		// 遍历所有车辆，然后根据carCode找出初始化结果中该车需要到达的点
 		// 如果没有找到，则该车为到buffer点的车
-		cars.forEach(function(car, index){
+		calcCars.forEach(function(car, index){
 			var points = _.filter(initResult, function(points) {
 				return car.carCode === points.carCode;
 			});
@@ -192,7 +193,7 @@ module.exports = {
 				car.routes = routes;
 			}
 		});
-		return cars;
+		return calcCars;
 	},
 	calcCarTouchBuffer(car, points, distances) {
 		if (!car || !points || !distances) {
@@ -212,7 +213,7 @@ module.exports = {
 			car.lastFinshPoint = car.ownerSupply;
 			car.bufferNeedVolumes = [];
 		}
-		// 
+		//
 		var stopLoop = true;
 		while(stopLoop) {
 			// 如果最后到达点等于routes的最后一个到达点，且notEnough等于0 则结束循环

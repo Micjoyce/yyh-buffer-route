@@ -18,6 +18,7 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 	// initResult可以动态给定达到优化的过程
 	var initResult = require('./initResult');
 
+
 	var finalResult = {};
 	var lastTimeResult = {};
 	var changeDegreeCount = 0;
@@ -27,9 +28,24 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 	// 根据初始解进行迭代
 	// for (var i = 0; i < config.iteratorTimes; i++) {
 	while(loopFlag) {
-		// cars,initResult,points可以动态给定达到优化的过程
-		var cars = require('./cars');
+		// initCars,initResult,points可以动态给定达到优化的过程
+		var initCars = require('./cars');
 		var points = require('./points');
+
+		// initallCars
+		initCars.forEach(function(car) {
+			delete car.goBuffer;
+			delete car.bufferName;
+			delete car.goBufferTime;
+			delete car.routes;
+			delete car.arrives;
+			delete car.volume;
+			delete car.supVolume;
+			delete car.notEnough;
+			delete car.lastFinshPoint;
+			delete car.bufferNeedVolumes;
+			delete car.waitTimes;
+		});
 
 		// 退后算法规则
 		// 初始退火温度为 260
@@ -47,7 +63,6 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 			timeSerie.push(annealResult.time);
 			// 停止判断
 			loopFlag = ANutils.stopDirection(timeSerie);
-
 			// 输出最终结果
 			if (loopFlag === false) {
 				allResult = annealResult;
@@ -58,19 +73,13 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 				annealDegree = annealDegree * config.annealFactor;
 				changeDegreeCount = 0;
 			}
-
-
-			initResult = utils.iterationResult(annealResult.points, cars);
+			initResult = utils.iterationResult(annealResult.points, initCars);
 		}else {
 			// 前两次不进行退火迭代
-			initResult = utils.iterationResult(initResult, cars);
+			initResult = utils.iterationResult(initResult, initCars);
 		}
-
-		// console.log(finalPointResult, '===', lastPointResult);
-
 		// init cars route,设置各车所要走的路径
-		cars = utils.initCarsRoutes(cars, initResult);
-
+		var cars = utils.initCarsRoutes(initCars, initResult);
 		var pointCars = _.filter(cars,function(car){
 			return !car.goBuffer;
 		});
@@ -80,6 +89,7 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 
 		// 找出所有车的路径
 		var goCars = utils.findWays(points, pointCars, distances);
+
 		// 找出没有到过buffer的cars
 		var noBufferCars = _.filter(goCars, function(car) {
 			return car.arrives.indexOf(bufferName) === -1;
