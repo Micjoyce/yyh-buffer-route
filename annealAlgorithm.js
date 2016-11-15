@@ -24,7 +24,7 @@ module.exports = {
 	},
 	// 以一定的概率接受
 	acceptChance(chancePercent){
-		if (!chancePercent) {
+		if (!chancePercent && chancePercent !== 0) {
 			console.log(`acceptChance: chancePercent${chancePercent}`);
 		}
 		var randomNum = Math.random();
@@ -59,12 +59,3 @@ module.exports = {
 		return false;
 	}
 }
-
-
-
-
-
-
-
-
-
