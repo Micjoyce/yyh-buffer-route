@@ -426,7 +426,7 @@ module.exports = {
 		var timeSerie = [];
 		initBufferCars.forEach(function(car) {
 			var count = Math.ceil(totalNeedVolume / car.load);
-			for (var i = 0; i < count; i++) {
+			for (var i = 1; i <= count; i++) {
 				var time = (i - 1)*car.goBufferTime + car.goBufferTime;
 				timeSerie.push(time);
 			}
@@ -449,6 +449,8 @@ module.exports = {
 		var initBufferCars = self.initBufferCars(bufferCars, distances);
 		// 假设各车单独运送到达需求量货物时需要多少次，生成一个时间序列
 		var timeSerie = self.generatorTimeTicks(totalNeedVolume, initBufferCars);
+		console.log(totalNeedVolume,timeSerie);
+
 		var needTime = 0;
 		for (var i = 0; i < timeSerie.length; i++) {
 			var time = timeSerie[i]
@@ -490,6 +492,7 @@ module.exports = {
 				// 需要进行时间延迟处理
 				// console.log("Need delay process");
 				var needTime = self.getBufferNeedTimeByVolume(totalNeedVolume, bufferCars, distances);
+				// console.log(needTime)
 				waitTime = needTime - brt.time
 
 				brt.waitTime = waitTime;
@@ -520,6 +523,7 @@ module.exports = {
 			var routeTime = self.calcRoutesTime(car.arrives, distances);
 			var waitTimes = _.sum(car.waitTimes);
 			var totalTime = routeTime + waitTimes;
+			// console.log(routeTime, routeTime, waitTimes, car.waitTimes, totalTime, car.arrives)
 			if (totalTime > maxTime) {
 				maxTime = totalTime
 			}

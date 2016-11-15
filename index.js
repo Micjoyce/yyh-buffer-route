@@ -101,7 +101,7 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 		var hasGoToBufferCars = _.filter(goCars, function(car) {
 			return car.arrives.indexOf(bufferName) !== -1;
 		});
-		// console.log(noBufferCars.length, hasGoToBufferCars.length, goCars.length, pointCars.length, bufferCars.length);
+				// console.log(noBufferCars.length, hasGoToBufferCars.length, goCars.length, pointCars.length, bufferCars.length);
 		// 获取到达buffer的routes数组，并按照升序排序
 		var carBufferRoutes = utils.getBuffersByCar(hasGoToBufferCars, distances);
 		// 开始计算各车到buffer的时间序列
@@ -124,6 +124,7 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 		// bufferNeedVolumes: [ 9, 3 ],
 		// waitTimes: [ 0.29999999999999716, 0 ] }
 		// 输出结果，计算出总时间, 总时间只和需要达到受灾点的时间有关。
+		// console.log(_.map(fixWaitTimeForGoToBufferCars, "arrives"));
 		var maxTime = Number(utils.getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances).toFixed(config.digital));
 
 		// 退火算法赋值
