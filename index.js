@@ -2,6 +2,17 @@ var _ = require('lodash')
 var utils = require('./utils');
 var ANutils = require('./annealAlgorithm');
 var config = require('./config');
+
+// 配置环境数据
+console.log(`---------------buffer点:${config.bufferName}------------------`);
+console.log(`---------------起始退火温度:${config.annealDegree}------------------`);
+console.log(`---------------退火系数:${config.annealFactor}------------------`);
+console.log(`---------------迭代次数:${config.iteratorTimes}------------------`);
+console.log(`---------------相同次数:${config.stopTime}------------------`);
+
+
+
+
 // 路程数据需要定时给出的
 var disCsvName = './distances.csv';
 

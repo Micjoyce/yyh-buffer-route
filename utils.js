@@ -495,6 +495,7 @@ module.exports = {
 				// 需要进行时间延迟处理
 				// console.log("Need delay process");
 				var needTime = self.getBufferNeedTimeByVolume(totalNeedVolume, bufferCars, distances);
+				// 如果在到达之前就能满足则等待时间为0，否则的话需要用needTime - brt.time;
 				if (needTime > brt.time) {
 					waitTime = needTime - brt.time;
 				} else {
