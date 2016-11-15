@@ -88,7 +88,6 @@ module.exports = {
 		var len = points.length;
 		var accumulate = 0;
 		var randomPoints = [];
-		console.log(len)
 		for (var i = 0; i < len; i++) {
 			var randNum = len - accumulate;
 			// 当剩余的最后值为1时，则不继续迭代
@@ -363,7 +362,7 @@ module.exports = {
 			bufferRoutes = bufferRoutes.concat(bfRoutes);
 		}
 		// 按照时间排序（升序）
-		bufferRoutes.sort(function(a, b){
+		bufferRoutes = bufferRoutes.sort(function(a, b){
 			return a.time > b.time;
 		});
 		return bufferRoutes;
@@ -449,7 +448,6 @@ module.exports = {
 		var initBufferCars = self.initBufferCars(bufferCars, distances);
 		// 假设各车单独运送到达需求量货物时需要多少次，生成一个时间序列
 		var timeSerie = self.generatorTimeTicks(totalNeedVolume, initBufferCars);
-		console.log(totalNeedVolume,timeSerie);
 
 		var needTime = 0;
 		for (var i = 0; i < timeSerie.length; i++) {
@@ -476,6 +474,11 @@ module.exports = {
 		var self = this;
 		var resultCarBufferRoutes = [];
 		var bufferSupVolume = 0;
+
+		carBufferRoutes.sort(function(a, b) {
+			return a.time > b.time;
+		})
+
 		for (var i = 0; i < carBufferRoutes.length; i++) {
 			var brt = carBufferRoutes[i];
 			// 传入一个时间点获取bufferCars的量
@@ -492,9 +495,11 @@ module.exports = {
 				// 需要进行时间延迟处理
 				// console.log("Need delay process");
 				var needTime = self.getBufferNeedTimeByVolume(totalNeedVolume, bufferCars, distances);
-				// console.log(needTime)
-				waitTime = needTime - brt.time
-
+				if (needTime > brt.time) {
+					waitTime = needTime - brt.time;
+				} else {
+					waitTime = 0;
+				}
 				brt.waitTime = waitTime;
 				resultCarBufferRoutes.push(brt);
 			}
@@ -512,6 +517,7 @@ module.exports = {
 				return route.carCode === car.carCode;
 			}),"waitTime");
 			car.waitTimes = waitTimes;
+			// console.log(waitTimes)
 			fixWaitTimeCars.push(car);
 		});
 		return fixWaitTimeCars;
