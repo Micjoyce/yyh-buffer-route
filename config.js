@@ -5,5 +5,8 @@ module.exports = {
 	annealFactor: 0.98,    //
 	iteratorTimes: 80,
 	stopTime: 400,
-	digital: 2   // 不用管
+	digital: 2,   // 不用管
+	timeIndex: 1, // 时间系数
+	volueDivideTimeIndex: 1, // 量／时间系数
+	safeIndex: 1, // 安全系数
 }

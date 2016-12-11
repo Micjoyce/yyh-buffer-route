@@ -169,6 +169,26 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 					allResult.safeIndex = utils.calcSafeIndexes(fixWaitTimeForGoToBufferCars, noBufferCars, safeIndexes);
 
 					// 输出结果
+					/*
+					{ time: 153,				// 时间
+					  points:
+					   [ { pCode: 'P1', carCode: 'S2-A-1', step: 1 },
+					     { pCode: 'P2', carCode: 'S2-A-1', step: 2 },
+					     { pCode: 'P3', carCode: 'S1-A-1', step: 1 },
+					     { pCode: 'P4', carCode: 'S1-A-1', step: 2 },
+					     { pCode: 'P5', carCode: 'S1-B-1', step: 1 },
+					     { pCode: 'P6', carCode: 'S2-C-1', step: 1 },
+					     { pCode: 'P7', carCode: 'S1-C-1', step: 1 },
+					     { pCode: 'P8', carCode: 'S2-C-1', step: 2 },
+					     { pCode: 'P9', carCode: 'S1-A-1', step: 3 },
+					     { pCode: 'P10', carCode: 'S1-A-1', step: 4 },
+					     { pCode: 'P11', carCode: 'S1-A-2', step: 1 } ],
+					  degree: 0.09280075974171312,  	// 退火最终温度
+					  volueDivideTime: 2.3632984684240497, // 累计量除于时间
+					  safeIndex: 0.5515906236750001, // 最小安全系数
+					  calcResult: 150.08511090790094 } // 最终计算结果  时间 ＊ 系数 － 量比指数和 ＊ 系数 － 安全指数 ＊ 系数
+					 */
+					allResult.calcResult = allResult.time * config.timeIndex - allResult.volueDivideTime * config.volueDivideTimeIndex - allResult.safeIndex * config.safeIndex;
 					console.log(allResult);
 				});
 			}
