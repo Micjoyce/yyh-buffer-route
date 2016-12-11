@@ -58,6 +58,7 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 			delete car.lastFinshPoint;
 			delete car.bufferNeedVolumes;
 			delete car.waitTimes;
+			delete car.perPointVolume;
 		});
 
 		// 退后算法规则
@@ -155,7 +156,11 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 			// waitTimes: [ 0.29999999999999716, 0 ] }
 			// 输出结果，计算出总时间, 总时间只和需要达到受灾点的时间有关。
 			// console.log(_.map(fixWaitTimeForGoToBufferCars, "arrives"));
+
 			var maxTime = Number(utils.getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances).toFixed(config.digital));
+			if (loopFlag === false) {
+				allResult.volueDivideTime = utils.calcVolumeExceptTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances);
+			}
 
 			// 退火算法赋值
 			lastTimeResult.time = finalResult.time;

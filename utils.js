@@ -5,6 +5,7 @@ var converter = new Converter({});
 var combinFlag = config.combinFlag;
 var bufferName = config.bufferName;
 var supPoints = require('./supPoints');
+var affectedPoint = require('./points');
 
 module.exports = {
 	iterationResult(initResult, cars) {
@@ -207,6 +208,7 @@ module.exports = {
 		// 如果在起始点出发时则为零，设置起始点为第一个到达点, 并且设置其初始化的的数量volume
 		if (!car.arrives || car.arrives.length === 0) {
 			car.arrives = [car.ownerSupply];
+			car.perPointVolume = [];
 			car.volume = car.load;
 			car.supVolume = 0;
 			car.notEnough = 0;
@@ -252,6 +254,7 @@ module.exports = {
 	updateCarVolume(car, needVolume, route) {
 		if (car.volume >= needVolume) {
 			car.arrives.push(route);
+			car.perPointVolume.push(needVolume)
 			car.supVolume += needVolume;
 			car.volume -= needVolume;
 			car.lastFinshPoint = route;
@@ -259,6 +262,7 @@ module.exports = {
 		}
 		// 当车上的数量小于需求量时则卸载下当前的量，设置notEnough的量
 		car.arrives.push(route);
+		car.perPointVolume.push(car.volume);
 		car.supVolume += car.volume;
 		car.notEnough = needVolume - car.volume;
 		car.volume = 0;
@@ -277,17 +281,20 @@ module.exports = {
 			if (isLastPoint) {
 				car.volume = 0;
 				car.supVolume += car.notEnough;
+				car.perPointVolume.push(car.notEnough);
 				car.bufferNeedVolumes.push(car.notEnough);
 				car.notEnough = 0;
 			} else {
 				car.volume = car.load - car.notEnough;
 				car.supVolume += car.notEnough;
+				car.perPointVolume.push(car.notEnough);
 				car.notEnough = 0;
 				car.bufferNeedVolumes.push(car.load);
 			}
 		} else {
 			car.volume = car.load;
 			car.supVolume += car.volume;
+			car.perPointVolume.push(car.volume);
 			car.notEnough -= car.load;
 			car.bufferNeedVolumes.push(car.load);
 		}
@@ -609,5 +616,76 @@ module.exports = {
 			return true;
 		}
 		return false;
+	},
+	/*
+	fixWaitTimeForGoToBufferCars: { carCode: 'S1-A-1',
+    type: 'A',
+    load: 9,
+    ownerSupply: 'Supply1',
+    routes: [ 'P6', 'P1' ],
+    arrives: [ 'Supply1', 'P6', 'P1', 'Buffer1', 'P1', 'Buffer1', 'P1' ],
+    volume: 0,
+    supVolume: 21,
+    notEnough: 0,
+    lastFinshPoint: 'P1',
+    bufferNeedVolumes: [ 9, 3 ],
+    waitTimes: [ 25.900000000000006, 4.300000000000011 ] },
+	noBufferCars:
+	 */
+	calcVolumeExceptTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances){
+		var result = 0;
+		const self = this;
+		fixWaitTimeForGoToBufferCars.forEach(function(car) {
+			var arrives = car.arrives;
+			// 找出剔除供应点hebuffer的点
+			var filterArray = [config.bufferName, arrives[0]];
+			var filterPoint = _.filter(arrives, function(item){
+				if (filterArray.indexOf(item) < 0) {
+					return true;
+				}
+				return false;
+			});
+			for (var j = 0; j < filterPoint.length; j++) {
+				var route = filterPoint[j];
+				// 计算出到达此点的需求量以及能提供的量
+				var volume = car.perPointVolume[j];
+				// 计算出到达此点的时间
+				var routes = arrives.slice(0, _.indexOf(arrives, route, j) + 1);
+				var time = self.calcRoutesTime(routes, distances);
+				// 找出buffer, 需要加上在buffer等待的时间。
+				var buffers = _.filter(routes, function(bufferPoint){
+					if (bufferPoint === config.bufferName) {
+						return true;
+					}
+					return false;
+				});
+				if (buffers.length > 0) {
+					time += car.waitTimes[buffers.length - 1];
+				}
+				result += volume/time;
+			}
+		});
+
+		noBufferCars.forEach(function(car) {
+			var arrives = car.arrives;
+			// 找出剔除供应点hebuffer的点
+			var filterArray = [config.bufferName, arrives[0]];
+			var filterPoint = _.filter(arrives, function(item){
+				if (filterArray.indexOf(item) < 0) {
+					return true;
+				}
+				return false;
+			});
+			for (var j = 0; j < filterPoint.length; j++) {
+				var route = filterPoint[j];
+				// 计算出到达此点的需求量以及能提供的量
+				var volume = car.perPointVolume[j];
+				// 计算出到达此点的时间
+				var routes = arrives.slice(0, _.indexOf(arrives, route, j) + 1);
+				var time = self.calcRoutesTime(routes, distances);
+				result += volume/time;
+			}
+		});
+		return result;
 	}
 }
