@@ -2,6 +2,7 @@ var _ = require('lodash')
 var config = require('./config');
 var Converter = require("csvtojson").Converter;
 var converter = new Converter({});
+var converterTwo = new Converter({});
 var combinFlag = config.combinFlag;
 var bufferName = config.bufferName;
 var supPoints = require('./supPoints');
@@ -124,6 +125,14 @@ module.exports = {
 			return console.log(`文件名:${fileUrl}, 回调函数${callback}`);
 		}
 		converter.fromFile(fileUrl ,function(err,result){
+			callback(err, result);
+		});
+	},
+	csvToJsonTwo(fileUrl, callback) {
+		if (!_.isString(fileUrl) || !_.isFunction(callback)) {
+			return console.log(`文件名:${fileUrl}, 回调函数${callback}`);
+		}
+		converterTwo.fromFile(fileUrl ,function(err,result){
 			callback(err, result);
 		});
 	},
@@ -687,5 +696,41 @@ module.exports = {
 			}
 		});
 		return result;
+	},
+	calcRouteSafeIndexes(routes, safeIndexes) {
+		// 给出一个routes 计算这个routes的时间
+		// [ 'Supply2', 'P8', 'Buffer1', 'P8', 'P10', 'Buffer1', 'P10', 'P9' ]
+		if (!_.isArray(routes)) {
+			return console.log(`routes: ${routes} Error`);
+		}
+		if (routes.length < 2) {
+			console.log("routes length Error, routes length must greater than 2, routes:${routes}");
+			return 0;
+		}
+		var self = this;
+		var indexes = 1;
+		for (var i = 1; i < routes.length; i++) {
+			var safeIndex = self.getDistance(routes[i-1], routes[i], safeIndexes);
+			if (!safeIndex) {
+				console.log(`Error, calcRoutesTime, safeIndex: ${safeIndex}, i-1: ${routes[i-1]}, i:${routes[i]}`);
+			} else {
+				indexes *= safeIndex;
+			}
+		}
+		return indexes;
+	},
+	calcSafeIndexes(fixWaitTimeForGoToBufferCars, noBufferCars, safeIndexes){
+		// 根据路径进行计算除safeIndexes
+		const self = this;
+		var carsIndexes = [];
+		fixWaitTimeForGoToBufferCars.forEach(function(car){
+			var indexes = self.calcRouteSafeIndexes(car.arrives, safeIndexes);
+			carsIndexes.push(indexes);
+		});
+		noBufferCars.forEach(function(car) {
+			var noBuffIndexes = self.calcRouteSafeIndexes(car.arrives, safeIndexes);
+			carsIndexes.push(noBuffIndexes);
+		});
+		return _.min(carsIndexes);
 	}
 }

@@ -4,6 +4,6 @@ module.exports = {
 	annealDegree: 300,		 // 起始退火温度
 	annealFactor: 0.98,    //
 	iteratorTimes: 80,
-	stopTime: 1,
+	stopTime: 400,
 	digital: 2   // 不用管
 }

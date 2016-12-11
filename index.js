@@ -17,6 +17,7 @@ console.log(`---------------相同次数:${config.stopTime}------------------`);
 
 // 路程数据需要定时给出的
 var disCsvName = './distances.csv';
+var safeindexesFile = './safeindexes.csv';
 
 // 基本配置文件
 var bufferName = config.bufferName;
@@ -162,6 +163,14 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 				// 量除于时间
 				allResult.volueDivideTime = utils.calcVolumeExceptTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances);
 				// 危险性
+				utils.csvToJsonTwo(safeindexesFile, function(err, joinIndexes){
+					// console.log(joinIndexes);
+					var safeIndexes = utils.initPointDistance(joinIndexes);
+					allResult.safeIndex = utils.calcSafeIndexes(fixWaitTimeForGoToBufferCars, noBufferCars, safeIndexes);
+
+					// 输出结果
+					console.log(allResult);
+				});
 			}
 
 			// 退火算法赋值
@@ -172,7 +181,4 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 			finalResult.points = initResult;
 		}
 	}
-
-	// 输出结果
-	console.log(allResult);
 });
