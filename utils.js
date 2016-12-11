@@ -4,6 +4,7 @@ var Converter = require("csvtojson").Converter;
 var converter = new Converter({});
 var combinFlag = config.combinFlag;
 var bufferName = config.bufferName;
+var supPoints = require('./supPoints');
 
 module.exports = {
 	iterationResult(initResult, cars) {
@@ -411,10 +412,14 @@ module.exports = {
 		var initBufferCars = self.initBufferCars(bufferCars, distances);
 		var bufferVolume = 0;
 		initBufferCars.forEach(function (bufferCar) {
+			console.log(bufferCar);
+
 			var count = self.getCountByTime(time, bufferCar);
 			var volume = count * bufferCar.load;
 			bufferVolume += volume;
 		});
+		// 需要做一个判断就是到达同一个sup点取物的车是否所获取的量已经超过了所能提供的量
+
 		// bufferVolume 为到某个时间点的量
 		return bufferVolume;
 	},
@@ -542,5 +547,54 @@ module.exports = {
 			}
 		});
 		return maxTime;
+	},
+	/*
+	[ { carCode: 'S2-C-1',
+	    type: 'C',
+	    load: 6.3,
+	    ownerSupply: 'Supply2',
+	    routes: [],
+	    goBuffer: true },
+	  { carCode: 'S2-C-2',
+	    type: 'C',
+	    load: 6.3,
+	    ownerSupply: 'Supply2',
+	    routes: [],
+	    goBuffer: true } ]
+	 */
+	isAllFromOneSupPoint(bufferCars) {
+		if (!Array.isArray(bufferCars)) {
+			return {
+				flag: false
+			};
+		}
+		var supPointNames = _.map(bufferCars, 'ownerSupply');
+		if (supPointNames.length < 2) {
+			return {
+				supPointNames: supPointNames,
+				flag: true,
+			};
+		}
+		return {
+			supPointNames: supPointNames,
+			flag: false,
+		};
+	},
+	getTotalBufferNeedVolume(carBufferRoutes, supPointName){
+		var totalBufferVolume = 0;
+		carBufferRoutes.forEach(function(car) {
+			totalBufferVolume += car.bufferNeedVolume;
+		});
+		var supPoint = _.find(supPoints, function(point) {
+			return point.name === supPointName;
+		});
+		if (!supPoint) {
+			return false;
+		}
+		// 如果不能满足则进行下一次递归
+		if (supPoint.point < totalBufferVolume) {
+			return true;
+		}
+		return false;
 	}
 }

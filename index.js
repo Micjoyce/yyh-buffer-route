@@ -2,6 +2,7 @@ var _ = require('lodash')
 var utils = require('./utils');
 var ANutils = require('./annealAlgorithm');
 var config = require('./config');
+var supPoints = require('./supPoints');
 
 // 配置环境数据
 console.log(`---------------buffer点:${config.bufferName}------------------`);
@@ -115,35 +116,47 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 				// console.log(noBufferCars.length, hasGoToBufferCars.length, goCars.length, pointCars.length, bufferCars.length);
 		// 获取到达buffer的routes数组，并按照升序排序
 		var carBufferRoutes = utils.getBuffersByCar(hasGoToBufferCars, distances);
-		// 开始计算各车到buffer的时间序列
-		// buffer 点的处理
-		var fixedBufferRoutes = utils.fixedBufferRoutes(carBufferRoutes, bufferCars, distances);
-		// 将各个buffer的等待时间添加大 hasGoToBufferCars 对象中
 
-		var fixWaitTimeForGoToBufferCars = utils.fixWaitTimeForGoToBufferCars(hasGoToBufferCars, fixedBufferRoutes);
-		// 数据结构
-		// { carCode: 'S1-A-1',
-		// type: 'A',
-		// load: 9,
-		// ownerSupply: 'Supply1',
-		// routes: [ 'P5', 'P3', 'P1' ],
-		// arrives: [ 'Supply1', 'P5', 'P3', 'P1', 'Buffer1', 'P1', 'Buffer1', 'P1' ],
-		// volume: 0,
-		// supVolume: 21,
-		// notEnough: 0,
-		// lastFinshPoint: 'P1',
-		// bufferNeedVolumes: [ 9, 3 ],
-		// waitTimes: [ 0.29999999999999716, 0 ] }
-		// 输出结果，计算出总时间, 总时间只和需要达到受灾点的时间有关。
-		// console.log(_.map(fixWaitTimeForGoToBufferCars, "arrives"));
-		var maxTime = Number(utils.getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances).toFixed(config.digital));
+		// 判断是否都是从一个点运输供给给buffer点，如果是的话，需要做判断，在做getneefrombuffer是需要做一个判断，是否本点有这些量
+		var isAllFromOneSupPoint = utils.isAllFromOneSupPoint(bufferCars);
+		// 如果都是从同一个节点出来的则需要判断是否能满足所有的bufferneedvolume
+		if (isAllFromOneSupPoint.flag) {
+			var canSupForBuffer = utils.getTotalBufferNeedVolume(carBufferRoutes, isAllFromOneSupPoint.supPointNames[0]);
+		}
+		// 如果不能满足到达buffer的点，进行下一次迭代
+		if (canSupForBuffer) {
+			console.log("canSupForBuffer", canSupForBuffer);
+		} else {
+			// 开始计算各车到buffer的时间序列
+			// buffer 点的处理
+			var fixedBufferRoutes = utils.fixedBufferRoutes(carBufferRoutes, bufferCars, distances);
+			// 将各个buffer的等待时间添加大 hasGoToBufferCars 对象中
 
-		// 退火算法赋值
-		lastTimeResult.time = finalResult.time;
-		finalResult.time = maxTime;
+			var fixWaitTimeForGoToBufferCars = utils.fixWaitTimeForGoToBufferCars(hasGoToBufferCars, fixedBufferRoutes);
+			// 数据结构
+			// { carCode: 'S1-A-1',
+			// type: 'A',
+			// load: 9,
+			// ownerSupply: 'Supply1',
+			// routes: [ 'P5', 'P3', 'P1' ],
+			// arrives: [ 'Supply1', 'P5', 'P3', 'P1', 'Buffer1', 'P1', 'Buffer1', 'P1' ],
+			// volume: 0,
+			// supVolume: 21,
+			// notEnough: 0,
+			// lastFinshPoint: 'P1',
+			// bufferNeedVolumes: [ 9, 3 ],
+			// waitTimes: [ 0.29999999999999716, 0 ] }
+			// 输出结果，计算出总时间, 总时间只和需要达到受灾点的时间有关。
+			// console.log(_.map(fixWaitTimeForGoToBufferCars, "arrives"));
+			var maxTime = Number(utils.getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances).toFixed(config.digital));
 
-		lastTimeResult.points = finalResult.points;
-		finalResult.points = initResult;
+			// 退火算法赋值
+			lastTimeResult.time = finalResult.time;
+			finalResult.time = maxTime;
+
+			lastTimeResult.points = finalResult.points;
+			finalResult.points = initResult;
+		}
 	}
 
 	// 输出结果
