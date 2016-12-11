@@ -159,7 +159,9 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 
 			var maxTime = Number(utils.getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances).toFixed(config.digital));
 			if (loopFlag === false) {
+				// 量除于时间
 				allResult.volueDivideTime = utils.calcVolumeExceptTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances);
+				// 危险性
 			}
 
 			// 退火算法赋值
