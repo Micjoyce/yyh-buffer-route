@@ -3,6 +3,7 @@ var utils = require('./utils');
 var ANutils = require('./annealAlgorithm');
 var config = require('./config');
 var supPoints = require('./supPoints');
+var stopTime = config.stopTime;
 
 // 配置环境数据
 console.log(`---------------buffer点:${config.bufferName}------------------`);
@@ -74,9 +75,9 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 			// 1、将接受的结果添加到timeSerie中进行检测是否连续几次达到的停止判断
 			timeSerie.push(annealResult.time);
 			// 停止判断
-			loopFlag = ANutils.stopDirection(timeSerie);
-			// 输出最终结果
-			if (loopFlag === false) {
+			if (stopTime <= 0) {
+				// 输出最终结果 程序将结束运行
+				loopFlag = false;
 				allResult = annealResult;
 				allResult.degree = annealDegree;
 			}
@@ -84,6 +85,12 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 			if (changeDegreeCount >= config.iteratorTimes) {
 				annealDegree = annealDegree * config.annealFactor;
 				changeDegreeCount = 0;
+				// 如果退火一次将次数递减一下
+				stopTime--;
+				// 输出迭代次数
+				if (stopTime % 50 === 0) {
+					console.log(`迭代次数: ${stopTime}`);
+				}
 			}
 			initResult = utils.iterationResult(annealResult.points, initCars);
 			while (_.uniq(_.map(initResult, "carCode")).length === initCars.length) {
