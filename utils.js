@@ -411,15 +411,28 @@ module.exports = {
 		var self = this;
 		var initBufferCars = self.initBufferCars(bufferCars, distances);
 		var bufferVolume = 0;
+		var supMonit = {};
 		initBufferCars.forEach(function (bufferCar) {
-			console.log(bufferCar);
-
 			var count = self.getCountByTime(time, bufferCar);
 			var volume = count * bufferCar.load;
-			bufferVolume += volume;
+			if (!supMonit[bufferCar.ownerSupply]) {
+				supMonit[bufferCar.ownerSupply] = volume;
+			} else {
+				supMonit[bufferCar.ownerSupply] += volume;
+			}
 		});
 		// 需要做一个判断就是到达同一个sup点取物的车是否所获取的量已经超过了所能提供的量
-
+		var keys = Object.keys(supMonit);
+		keys.forEach(function(supName, index) {
+			var supVolume = _.find(supPoints, function(point, index) {
+				return point.name === supName;
+			}).volume;
+			if (supMonit[supName] > supVolume ) {
+				bufferVolume += supVolume;
+			} else {
+				bufferVolume += supMonit[supName];
+			}
+		});
 		// bufferVolume 为到某个时间点的量
 		return bufferVolume;
 	},
