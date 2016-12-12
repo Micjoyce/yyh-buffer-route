@@ -41,4 +41,16 @@ module.exports = [
 		load: 6.3,
 		ownerSupply: "Supply2",
 	},
+	{
+		carCode: 'S1-A-3',
+		type: "A",
+		load: 9,
+		ownerSupply: "Supply2",
+	},
+	{
+		carCode: 'S1-B-2',
+		type: "A",
+		load: 7.2,
+		ownerSupply: "Supply2",
+	},
 ];
