@@ -457,12 +457,15 @@ module.exports = {
 			return console.log(`generatorTimeTicks Error`);
 		}
 		var timeSerie = [];
-		initBufferCars.forEach(function(car) {
+		initBufferCars.forEach(function(car, index) {
 			var count = Math.ceil(totalNeedVolume / car.load);
 			for (var i = 1; i <= count; i++) {
-				var time = (i - 1)*car.goBufferTime + car.goBufferTime;
+				var time = (i - 1)*car.goBufferTime*2 + car.goBufferTime;
 				timeSerie.push(time);
 			}
+			// if (index === 0) {
+			// 	console.log(totalNeedVolume,car.load, timeSerie)
+			// }
 		});
 		// 按照省需排序返回
 		timeSerie.sort(function(a, b){
