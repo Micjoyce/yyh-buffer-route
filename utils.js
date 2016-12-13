@@ -477,6 +477,7 @@ module.exports = {
 					waitTime = 0;
 				}
 				brt.waitTime = waitTime;
+				bufferSupVolume += brt.bufferNeedVolume;
 				resultCarBufferRoutes.push(brt);
 			}
 		}
@@ -502,6 +503,7 @@ module.exports = {
 		var maxTime = 0;
 		var self = this;
 		var maxCar;
+		var allBufferNeedVolume = 0
 		fixWaitTimeForGoToBufferCars.forEach(function(car) {
 			var routeTime = self.calcRoutesTime(car.arrives, distances);
 			var waitTimes = _.sum(car.waitTimes);
@@ -510,6 +512,7 @@ module.exports = {
 				maxTime = totalTime;
 				maxCar = car;
 			}
+			allBufferNeedVolume += _.sum(car.bufferNeedVolumes);
 		});
 		noBufferCars.forEach(function(car) {
 			var routeTime = self.calcRoutesTime(car.arrives, distances);
@@ -519,6 +522,7 @@ module.exports = {
 			}
 		});
 		if (!loopFlag) {
+			console.log('buffer need：',allBufferNeedVolume);
 			console.log('运行路程最大的那辆车：',maxCar);
 			console.log('路径所需时间route time：',self.calcRoutesTime(maxCar.arrives, distances));
 			console.log('等待所需时间buffer wait time：', _.sum(maxCar.waitTimes));
