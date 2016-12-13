@@ -418,18 +418,18 @@ module.exports = {
 		}
 		count ++;
 		var lessTime = time - bufferCar.goBufferTime;
-		var moreCount = Math.floor(lessTime/bufferCar.goBufferTime);
+		var moreCount = Math.floor(lessTime/(bufferCar.goBufferTime * 2));
 		count += moreCount;
 		return count;
 	},
 	getBufferVolumeByTime(time, bufferCars, distances) {
-		// initBufferCars[{car.goBufferTime}]
 		var self = this;
 		var initBufferCars = self.initBufferCars(bufferCars, distances);
 		var bufferVolume = 0;
 		var supMonit = {};
 		initBufferCars.forEach(function (bufferCar) {
 			var count = self.getCountByTime(time, bufferCar);
+			// console.log(time, count, bufferCar.goBufferTime)
 			var volume = count * bufferCar.load;
 			if (!supMonit[bufferCar.ownerSupply]) {
 				supMonit[bufferCar.ownerSupply] = volume;
