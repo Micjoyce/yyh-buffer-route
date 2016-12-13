@@ -129,12 +129,13 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 		// 判断是否都是从一个点运输供给给buffer点，如果是的话，需要做判断，在做getneefrombuffer是需要做一个判断，是否本点有这些量
 		var isAllFromOneSupPoint = utils.isAllFromOneSupPoint(bufferCars);
 		// 如果都是从同一个节点出来的则需要判断是否能满足所有的bufferneedvolume
+		var canSupForBuffer = true;
 		if (isAllFromOneSupPoint.flag) {
-			var canSupForBuffer = utils.getTotalBufferNeedVolume(carBufferRoutes, isAllFromOneSupPoint.supPointNames[0]);
+			canSupForBuffer = utils.getTotalBufferNeedVolume(carBufferRoutes, isAllFromOneSupPoint.supPointNames[0]);
 		}
 		// 如果不能满足到达buffer的点，进行下一次迭代
-		if (canSupForBuffer) {
-			console.log("canSupForBuffer", canSupForBuffer);
+		if (!canSupForBuffer) {
+			// console.log(" not canSupForBuffer", canSupForBuffer);
 		} else {
 			// 开始计算各车到buffer的时间序列
 			// buffer 点的处理
@@ -162,6 +163,7 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 			if (loopFlag === false) {
 				// 量除于时间
 				allResult.volueDivideTime = utils.calcVolumeExceptTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances);
+				console.log(fixWaitTimeForGoToBufferCars, noBufferCars);
 				// 危险性
 				utils.csvToJsonTwo(safeindexesFile, function(err, joinIndexes){
 					// console.log(joinIndexes);

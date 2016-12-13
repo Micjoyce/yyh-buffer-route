@@ -564,7 +564,6 @@ module.exports = {
 			var routeTime = self.calcRoutesTime(car.arrives, distances);
 			var waitTimes = _.sum(car.waitTimes);
 			var totalTime = routeTime + waitTimes;
-			// console.log(routeTime, routeTime, waitTimes, car.waitTimes, totalTime, car.arrives)
 			if (totalTime > maxTime) {
 				maxTime = totalTime
 			}
@@ -621,10 +620,11 @@ module.exports = {
 			return false;
 		}
 		// 如果不能满足则进行下一次递归
-		if (supPoint.point < totalBufferVolume) {
-			return true;
+		if (supPoint.volume < totalBufferVolume) {
+			// console.log(supPoint.volume, totalBufferVolume)
+			return false;
 		}
-		return false;
+		return true;
 	},
 	/*
 	fixWaitTimeForGoToBufferCars: { carCode: 'S1-A-1',
