@@ -163,7 +163,9 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 			if (loopFlag === false) {
 				// 量除于时间
 				allResult.volueDivideTime = utils.calcVolumeExceptTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances);
-				console.log(fixWaitTimeForGoToBufferCars, noBufferCars);
+				console.log('往buffer运输的车辆:',bufferCars);
+				console.log('需要去buffer的车辆:',fixWaitTimeForGoToBufferCars);
+				console.log('不需要去buffer的车辆:',noBufferCars)
 				// 危险性
 				utils.csvToJsonTwo(safeindexesFile, function(err, joinIndexes){
 					// console.log(joinIndexes);
