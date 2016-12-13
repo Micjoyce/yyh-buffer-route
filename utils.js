@@ -58,68 +58,6 @@ module.exports = {
 		});
 		return position;
 	},
-	generatorRandomResult(cars, points) {
-		var self = this;
-		var carCodes = _.map(cars, "carCode");
-		// 产生随机的car
-		var randCars = self.shuffle(carCodes);
-		// 随即产生车辆运行的顺序
-		var randomPoints = self.randomPointsArr(points);
-		// 得到个点的pCode
-		var pCodes = _.map(points, "pCode");
-		// 根据随机产生的数据生成result
-		var compoundResult = self.compoundResult(pCodes, randCars, randomPoints);
-	},
-	compoundResult(pCodes, randCars, randomPoints) {
-		// 随机解的结果如下所示。
-		// {
-		//  pCode: "P1",
-		//  carCode: "S1-A-1",
-		//  step: 3,
-		// },
-		if (!pCodes || !randCars || !randomPoints) {
-			return console.log(`compoundResult: Error`);
-		}
-		var result = [];
-		randomPoints.forEach(function(points, index) {
-			var car = randCars[index];
-			// 随机生成解，后续继续修改
-			// －－－－－－－－－－－－－－－－－－未完成－－－－－－－－－－－－－－－－
-		});
-	},
-	randomPointsArr(points) {
-		var len = points.length;
-		var accumulate = 0;
-		var randomPoints = [];
-		for (var i = 0; i < len; i++) {
-			var randNum = len - accumulate;
-			// 当剩余的最后值为1时，则不继续迭代
-			if (randNum === 1) {
-				randomPoints.push(randNum);
-				break;
-			}
-			var randPointLen = parseInt(Math.random() * randNum);
-			accumulate += randPointLen;
-			if (accumulate === len) {
-				break;
-			}
-			randomPoints.push(randPointLen);
-		}
-		return randomPoints;
-	},
-	shuffle(oriArr) {
-		var mixedArray = [];
-		var originalArray = [];
-		originalArray = originalArray.concat(oriArr);
-		while(originalArray.length > 0) {
-			//generate a random index of the original array
-			var randomIndex = parseInt(Math.random() * originalArray.length);
-			//push the random element into the mixed one, at the same time, delete the original element
-			mixedArray.push(originalArray[randomIndex]);
-			originalArray.splice(randomIndex, 1);
-		}
-		return mixedArray;
-	},
 	csvToJson(fileUrl, callback) {
 		if (!_.isString(fileUrl) || !_.isFunction(callback)) {
 			return console.log(`文件名:${fileUrl}, 回调函数${callback}`);
