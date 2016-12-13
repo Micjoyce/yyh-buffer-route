@@ -159,7 +159,7 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 			// 输出结果，计算出总时间, 总时间只和需要达到受灾点的时间有关。
 			// console.log(_.map(fixWaitTimeForGoToBufferCars, "arrives"));
 
-			var maxTime = Number(utils.getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances).toFixed(config.digital));
+			var maxTime = Number(utils.getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances, loopFlag).toFixed(config.digital));
 			if (loopFlag === false) {
 				// 量除于时间
 				allResult.volueDivideTime = utils.calcVolumeExceptTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances);

@@ -498,23 +498,31 @@ module.exports = {
 		});
 		return fixWaitTimeCars;
 	},
-	getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances) {
+	getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances, loopFlag) {
 		var maxTime = 0;
 		var self = this;
+		var maxCar;
 		fixWaitTimeForGoToBufferCars.forEach(function(car) {
 			var routeTime = self.calcRoutesTime(car.arrives, distances);
 			var waitTimes = _.sum(car.waitTimes);
 			var totalTime = routeTime + waitTimes;
 			if (totalTime > maxTime) {
-				maxTime = totalTime
+				maxTime = totalTime;
+				maxCar = car;
 			}
 		});
 		noBufferCars.forEach(function(car) {
 			var routeTime = self.calcRoutesTime(car.arrives, distances);
 			if (routeTime > maxTime) {
-				maxTime = routeTime
+				maxTime = routeTime;
+				maxCar = car
 			}
 		});
+		if (!loopFlag) {
+			console.log('运行路程最大的那辆车：',maxCar);
+			console.log('路径所需时间route time：',self.calcRoutesTime(maxCar.arrives, distances));
+			console.log('等待所需时间buffer wait time：', _.sum(maxCar.waitTimes));
+		}
 		return maxTime;
 	},
 	/*
