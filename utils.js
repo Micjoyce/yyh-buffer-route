@@ -17,25 +17,26 @@ module.exports = {
 		// 找出车辆编号
 		var carCodes = _.map(initResult, "carCode");
 		var findCarPosition = parseInt(Math.random() * carCodes.length);
-		var replaceCarCode = carCodes[findCarPosition];
+		var replacedCarCode = carCodes[findCarPosition];
 		// 如果要替换的车与之前的相同则返回
-		if (originCarCode === replaceCarCode) {
+		if (originCarCode === replacedCarCode) {
 			return initResult;
 		}
-		var replacePosition = self.findCarCodeMaxPosition(replaceCarCode, initResult);
+		// 找到最大那辆车的位置进行替换
+		var replacePosition = self.findCarCodeMaxPosition(replacedCarCode, initResult);
 		// 进行数据替换
 		var replaceResult = self.replaceResult(originCarCode, replacePosition, initResult);
 		return replaceResult;
 	},
 	replaceResult(originCarCode, replacePosition, initResult) {
-		//originCarCode 找出是否再这个数据中，如果不在则直接替换，添加step为1
+		//originCarCode 找出是否在这个数据中，如果不在则直接替换，添加step为1
 		//如果存在的话则替换添加最大值＋1的step
 		var result = [].concat(initResult);
-		var findExsit = _.filter(initResult, function(point, index) {
+		var findExsit = _.filter(result, function(point, index) {
 			return point.carCode === originCarCode;
 		});
 		// 如果存在
-		var point = initResult[replacePosition];
+		var point = result[replacePosition];
 		point.carCode = originCarCode;
 		if (findExsit.length > 0) {
 			point.step = findExsit.length + 1;

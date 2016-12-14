@@ -36,7 +36,6 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 	var finalResult = {};
 	var lastTimeResult = {};
 	var changeDegreeCount = 0;
-	var timeSerie = [];
 	var loopFlag = true;
 	var annealDegree = config.annealDegree;
 	// 根据初始解进行迭代
@@ -45,7 +44,7 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 		// initCars,initResult,points可以动态给定达到优化的过程
 		var initCars = require('./cars');
 		var points = require('./points');
-
+		console.log(initResult)
 		// initallCars
 		initCars.forEach(function(car) {
 			delete car.goBuffer;
@@ -72,10 +71,8 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 			var annealResult = ANutils.annealAlgorithm(finalResult, lastTimeResult, initResult, annealDegree)
 			// finalResult = annealResult;
 			// console.log(finalResult.time, lastTimeResult.time, annealResult.time);
-			// console.log(annealResult.points)
+			// console.log(annealResult.time)
 
-			// 1、将接受的结果添加到timeSerie中进行检测是否连续几次达到的停止判断
-			timeSerie.push(annealResult.time);
 			// 停止判断
 			if (stopTime <= 0) {
 				// 输出最终结果 程序将结束运行
@@ -84,19 +81,21 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 				allResult.degree = annealDegree;
 			}
 			// 改变退火温度
-			if (changeDegreeCount >= config.iteratorTimes) {
-				annealDegree = annealDegree * config.annealFactor;
-				changeDegreeCount = 0;
-				// 如果退火一次将次数递减一下
-				stopTime--;
-				// 输出迭代次数
-				if (stopTime % 50 === 0) {
-					console.log(`迭代次数: ${stopTime}`);
+			if (loopFlag) {
+				if (changeDegreeCount >= config.iteratorTimes) {
+					annealDegree = annealDegree * config.annealFactor;
+					changeDegreeCount = 0;
+					// 如果退火一次将次数递减一下
+					stopTime--;
+					// 输出迭代次数
+					if (stopTime % 50 === 0) {
+						console.log(`迭代次数: ${stopTime}`);
+					}
 				}
-			}
-			initResult = utils.iterationResult(annealResult.points, initCars);
-			while (_.uniq(_.map(initResult, "carCode")).length === initCars.length) {
 				initResult = utils.iterationResult(annealResult.points, initCars);
+				while (_.uniq(_.map(initResult, "carCode")).length === initCars.length) {
+					initResult = utils.iterationResult(annealResult.points, initCars);
+				}
 			}
 		}else {
 			// 前两次不进行退火迭代
@@ -196,7 +195,6 @@ utils.csvToJson(disCsvName, function(err, jsonDis){
 					console.log(allResult);
 				});
 			}
-
 			// 退火算法赋值
 			lastTimeResult.time = finalResult.time;
 			finalResult.time = maxTime;

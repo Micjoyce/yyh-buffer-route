@@ -2,7 +2,7 @@ var _ = require('lodash')
 var config = require('./config');
 
 module.exports = {
-	// 退后算法规则
+	// 退火算法规则
 	// 按照一定的概率接受某个结果 e(-(T前-T后)/260)的温度
 	annealAlgorithm(finalResult, lastTimeResult, initResult, degree) {
 		// if (!lastTimeResult.time || !finalResult.time) {
@@ -12,7 +12,7 @@ module.exports = {
 		var self = this;
 		if (finalResult.time <= lastTimeResult.time) {
 			return finalResult;
-		}
+		} 
 		// 如果此次比之前的结果大，就按照一定的概率接受某个结果 e(-(T前-T后)/260)的温度
 		var powNum = -(finalResult.time - lastTimeResult.time)/degree;
 		var chancePercent = Math.pow(Math.E, powNum);
