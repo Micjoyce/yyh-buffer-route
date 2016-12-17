@@ -1,42 +1,44 @@
-var _ = require('lodash')
-var config = require('./config');
-var Converter = require("csvtojson").Converter;
-var converter = new Converter({});
-var converterTwo = new Converter({});
-var combinFlag = config.combinFlag;
-var bufferName = config.bufferName;
-var supPoints = require('./supPoints');
-var affectedPoint = require('./points');
+'use strict';
+
+let _ = require('lodash')
+let config = require('./config');
+let Converter = require("csvtojson").Converter;
+let converter = new Converter({});
+let converterTwo = new Converter({});
+let combinFlag = config.combinFlag;
+let bufferName = config.bufferName;
+let supPoints = require('./supPoints');
+let affectedPoint = require('./points');
 
 module.exports = {
 	iterationResult(initResult, cars) {
-		var len = cars.length;
-		var self = this;
-		var randomCarPosition = parseInt(Math.random() * len);
-		var originCarCode = cars[randomCarPosition].carCode;
+		let len = cars.length;
+		let self = this;
+		let randomCarPosition = parseInt(Math.random() * len);
+		let originCarCode = cars[randomCarPosition].carCode;
 		// 找出车辆编号
-		var carCodes = _.map(initResult, "carCode");
-		var findCarPosition = parseInt(Math.random() * carCodes.length);
-		var replacedCarCode = carCodes[findCarPosition];
+		let carCodes = _.map(initResult, "carCode");
+		let findCarPosition = parseInt(Math.random() * carCodes.length);
+		let replacedCarCode = carCodes[findCarPosition];
 		// 如果要替换的车与之前的相同则返回
 		if (originCarCode === replacedCarCode) {
 			return initResult;
 		}
 		// 找到最大那辆车的位置进行替换
-		var replacePosition = self.findCarCodeMaxPosition(replacedCarCode, initResult);
+		let replacePosition = self.findCarCodeMaxPosition(replacedCarCode, initResult);
 		// 进行数据替换
-		var replaceResult = self.replaceResult(originCarCode, replacePosition, initResult);
+		let replaceResult = self.replaceResult(originCarCode, replacePosition, initResult);
 		return replaceResult;
 	},
 	replaceResult(originCarCode, replacePosition, initResult) {
 		//originCarCode 找出是否在这个数据中，如果不在则直接替换，添加step为1
 		//如果存在的话则替换添加最大值＋1的step
-		var result = [].concat(initResult);
-		var findExsit = _.filter(result, function(point, index) {
+		let result = [].concat(initResult);
+		let findExsit = _.filter(result, function(point, index) {
 			return point.carCode === originCarCode;
 		});
 		// 如果存在
-		var point = result[replacePosition];
+		let point = result[replacePosition];
 		point.carCode = originCarCode;
 		if (findExsit.length > 0) {
 			point.step = findExsit.length + 1;
@@ -47,8 +49,8 @@ module.exports = {
 		return result;
 	},
 	findCarCodeMaxPosition(carCode, initResult) {
-		var position = 0;
-		var init = 0;
+		let position = 0;
+		let init = 0;
 		initResult.forEach(function(point, index) {
 			if (point.carCode === carCode) {
 				if (point.step >= init) {
@@ -79,25 +81,25 @@ module.exports = {
 		if (!_.isArray(disArr)) {
 			return console.log((`${disArr}不是一个数组`));
 		}
-		var name = mainKeyName || "name";
-		var result = {};
-		var len = disArr.length;
-		for (var i = 0; i < len; i++) {
-			var item = disArr[i];
-			var firstKey = item[name].toString();
+		let name = mainKeyName || "name";
+		let result = {};
+		let len = disArr.length;
+		for (let i = 0; i < len; i++) {
+			let item = disArr[i];
+			let firstKey = item[name].toString();
 			delete item[name];
-			var allKeys = _.keys(item);
+			let allKeys = _.keys(item);
 			allKeys.forEach(function(key, index){
-				var val = item[key];
-				var key = key.toString();
+				let val = item[key];
+				key = key.toString();
 				if (firstKey === key) {
 					val = 0;
 				}
 				if (val === "") {
-					var mirrorKey = key + combinFlag + firstKey;
+					let mirrorKey = key + combinFlag + firstKey;
 					val = result[mirrorKey];
 				}
-				var combinKey = firstKey + combinFlag + key;
+				let combinKey = firstKey + combinFlag + key;
 				result[combinKey] = val;
 			});
 		}
@@ -107,10 +109,10 @@ module.exports = {
 		if (!firstKey || !lastKey || !distances) {
 			return console.log(`firstKey:${firstKey},lastKey: ${lastKey},distances:${distances}`);
 		}
-		var key = firstKey + combinFlag + lastKey;
-		var disVal = distances[key];
+		let key = firstKey + combinFlag + lastKey;
+		let disVal = distances[key];
 		if (!disVal && disVal !== 0) {
-			var reverseKey = lastKey + combinFlag + firstKey;
+			let reverseKey = lastKey + combinFlag + firstKey;
 			disVal = distances[reverseKey];
 		}
 		if (!disVal && disVal !== 0) {
@@ -118,15 +120,16 @@ module.exports = {
 		}
 		return disVal;
 	},
-	initCarsRoutes(cars, initResult) {
-		if (!cars || !initResult) {
+	initCarsRoutes(initCars, initResult) {
+		if (!initCars || !initResult) {
 			return console.log(`Error: cars: ${cars}, initResult: ${initResult}`);
 		}
-		var calcCars = [].concat(cars);
+		// 深度复制initCars
+		let calcCars = JSON.parse(JSON.stringify(initCars));
 		// 遍历所有车辆，然后根据carCode找出初始化结果中该车需要到达的点
 		// 如果没有找到，则该车为到buffer点的车
 		calcCars.forEach(function(car, index){
-			var points = _.filter(initResult, function(points) {
+			let points = _.filter(initResult, function(points) {
 				return car.carCode === points.carCode;
 			});
 			// 如果没有找到则标志为到buffer的车辆
@@ -138,7 +141,7 @@ module.exports = {
 				points.sort(function(itema, itemb){
 					return itema.step > itemb.step;
 				});
-				var routes = _.map(points, 'pCode');
+				let routes = _.map(points, 'pCode');
 				car.routes = routes;
 			}
 		});
@@ -148,8 +151,8 @@ module.exports = {
 		if (!car || !points || !distances) {
 			return console.log(`calcCarTouchBuffer Error, car: ${car}, points: ${points}, distances: ${distances}`);
 		}
-		var self = this;
-		var routes = car.routes;
+		let self = this;
+		let routes = car.routes;
 		if (!car.goBuffer && (!routes || routes.length < 1)) {
 			return console.log(`car: ${car.carCode}, routes Error`);
 		}
@@ -164,10 +167,10 @@ module.exports = {
 			car.bufferNeedVolumes = [];
 		}
 		//
-		var stopLoop = true;
+		let stopLoop = true;
 		while(stopLoop) {
 			// 如果最后到达点等于routes的最后一个到达点，且notEnough等于0 则结束循环
-			var isLastPoint = self.isLastPoint(car);
+			let isLastPoint = self.isLastPoint(car);
 			if (isLastPoint && car.notEnough === 0) {
 				stopLoop = false;
 			} else {
@@ -176,8 +179,8 @@ module.exports = {
 					// 需要去一次buffer点进行装载，假设不需要等待，等待时间在最后结果进行添加
 					car  = self.goToBuffer(car);
 				} else{
-					var route = self.getNextRoute(car);
-					var needVolume = _.map(_.filter(points, function(point){
+					let route = self.getNextRoute(car);
+					let needVolume = _.map(_.filter(points, function(point){
 						return point.code === route;
 					}), 'needVolume')[0];
 					// 更新car的volume
@@ -189,11 +192,11 @@ module.exports = {
 		return car;
 	},
 	getNextRoute(car) {
-		var routeLen = car.routes.length;
+		let routeLen = car.routes.length;
 		if (routeLen === 1) {
 			return car.routes[0];
 		}
-		var index = car.routes.indexOf(car.lastFinshPoint);
+		let index = car.routes.indexOf(car.lastFinshPoint);
 		return car.routes[index + 1];
 	},
 	isLastPoint(car) {
@@ -217,12 +220,12 @@ module.exports = {
 		return car;
 	},
 	goToBuffer(car) {
-		var self = this;
-		var isLastPoint = self.isLastPoint(car);
-		var isLoadGreaterNeed = car.load > car.notEnough;
+		let self = this;
+		let isLastPoint = self.isLastPoint(car);
+		let isLoadGreaterNeed = car.load > car.notEnough;
 		// 判定是否为最后一个装载点，如果是装载最后一个点且需求量小于最大装载量则只装载最后一个点的需求量
 		car.arrives.push(bufferName);
-		var route = car.arrives[car.arrives.length - 2];
+		let route = car.arrives[car.arrives.length - 2];
 		car.arrives.push(route);
 		if (isLoadGreaterNeed) {
 			// 装载量大于此点的需求，并且为最后一个运输点
@@ -250,14 +253,14 @@ module.exports = {
 		return car;
 	},
 	findWays(points, pointCars, distances) {
-		var self = this;
+		let self = this;
 		if (!_.isArray(points) || !_.isArray(pointCars) || _.isArray(distances)) {
 			return console.log(`输入错误: points:${points}, pointCars: ${pointCars}, distances:${distances}`);
 		}
 		// 找出各车的第一次到达buffer时候的状态
-		var goCars = [];
+		let goCars = [];
 		pointCars.forEach(function(car, index){
-			var routeCar = self.calcCarTouchBuffer(car, points, distances);
+			let routeCar = self.calcCarTouchBuffer(car, points, distances);
 			goCars.push(routeCar);
 		});
 		return goCars;
@@ -272,10 +275,10 @@ module.exports = {
 			console.log("routes length Error, routes length must greater than 2, routes:${routes}");
 			return 0;
 		}
-		var self = this;
-		var times = 0;
-		for (var i = 1; i < routes.length; i++) {
-			var time = self.getDistance(routes[i-1], routes[i], distances);
+		let self = this;
+		let times = 0;
+		for (let i = 1; i < routes.length; i++) {
+			let time = self.getDistance(routes[i-1], routes[i], distances);
 			if (!time) {
 				console.log(`Error, calcRoutesTime, time: ${time}, i-1: ${routes[i-1]}, i:${routes[i]}`);
 			} else {
@@ -285,16 +288,16 @@ module.exports = {
 		return times;
 	},
 	getBufferByRoutes(car, distances) {
-		var self = this;
-		var bufferRoute = [];
-		var routes = car.arrives;
-		var bufferCount = 0;
-		for (var i = 0; i < routes.length; i++) {
-			var route = routes[i];
+		let self = this;
+		let bufferRoute = [];
+		let routes = car.arrives;
+		let bufferCount = 0;
+		for (let i = 0; i < routes.length; i++) {
+			let route = routes[i];
 			if (route === bufferName) {
 				bufferCount ++;
-				var rts =  routes.slice(0, i+1);
-				var time = self.calcRoutesTime(rts, distances)
+				let rts =  routes.slice(0, i+1);
+				let time = self.calcRoutesTime(rts, distances)
 				bufferRoute.push({
 					time: time,
 					routes: rts,
@@ -309,12 +312,12 @@ module.exports = {
 		if (!_.isArray(hasGoToBufferCars)) {
 			return console.log(`setBufferTicks: ${hasGoToBufferCars} Error`);
 		}
-		var self = this;
-		var bufferRoutes = [];
-		for (var i = 0; i < hasGoToBufferCars.length; i++) {
-			var car = hasGoToBufferCars[i];
+		let self = this;
+		let bufferRoutes = [];
+		for (let i = 0; i < hasGoToBufferCars.length; i++) {
+			let car = hasGoToBufferCars[i];
 			// 找到所有到达buffer的点，及其路由
-			var bfRoutes = self.getBufferByRoutes(car, distances);
+			let bfRoutes = self.getBufferByRoutes(car, distances);
 			bufferRoutes = bufferRoutes.concat(bfRoutes);
 		}
 		// 按照时间排序（升序）
@@ -328,11 +331,11 @@ module.exports = {
 		if (!_.isArray(bufferCars)) {
 			return console.log(`Error initBufferCars, bufferCars${bufferCars}`);
 		}
-		var self = this;
-		var initBufferCars = [];
+		let self = this;
+		let initBufferCars = [];
 		bufferCars.forEach(function(car){
 			// getDistance
-			var dis = self.getDistance(car.ownerSupply, bufferName, distances);
+			let dis = self.getDistance(car.ownerSupply, bufferName, distances);
 			car.goBufferTime = dis;
 			car.bufferName = bufferName;
 			initBufferCars.push(car);
@@ -351,25 +354,25 @@ module.exports = {
 		//    goBuffer: true,
 		//    goBufferTime: 18,
 		//    bufferName: 'Buffer1' }
-		var count = 0;
+		let count = 0;
 		if (time < bufferCar.goBufferTime) {
 			return count;
 		}
 		count ++;
-		var lessTime = time - bufferCar.goBufferTime;
-		var moreCount = Math.floor(lessTime/(bufferCar.goBufferTime * 2));
+		let lessTime = time - bufferCar.goBufferTime;
+		let moreCount = Math.floor(lessTime/(bufferCar.goBufferTime * 2));
 		count += moreCount;
 		return count;
 	},
 	getBufferVolumeByTime(time, bufferCars, distances) {
-		var self = this;
-		var initBufferCars = self.initBufferCars(bufferCars, distances);
-		var bufferVolume = 0;
-		var supMonit = {};
+		let self = this;
+		let initBufferCars = self.initBufferCars(bufferCars, distances);
+		let bufferVolume = 0;
+		let supMonit = {};
 		initBufferCars.forEach(function (bufferCar) {
-			var count = self.getCountByTime(time, bufferCar);
+			let count = self.getCountByTime(time, bufferCar);
 			// console.log(time, count, bufferCar.goBufferTime)
-			var volume = count * bufferCar.load;
+			let volume = count * bufferCar.load;
 			if (!supMonit[bufferCar.ownerSupply]) {
 				supMonit[bufferCar.ownerSupply] = volume;
 			} else {
@@ -377,9 +380,9 @@ module.exports = {
 			}
 		});
 		// 需要做一个判断就是到达同一个sup点取物的车是否所获取的量已经超过了所能提供的量
-		var keys = Object.keys(supMonit);
+		let keys = Object.keys(supMonit);
 		keys.forEach(function(supName, index) {
-			var supVolume = _.find(supPoints, function(point, index) {
+			let supVolume = _.find(supPoints, function(point, index) {
 				return point.name === supName;
 			}).volume;
 			if (supMonit[supName] > supVolume ) {
@@ -395,11 +398,11 @@ module.exports = {
 		if (!totalNeedVolume || !initBufferCars) {
 			return console.log(`generatorTimeTicks Error`);
 		}
-		var timeSerie = [];
+		let timeSerie = [];
 		initBufferCars.forEach(function(car, index) {
-			var count = Math.ceil(totalNeedVolume / car.load);
-			for (var i = 1; i <= count; i++) {
-				var time = (i - 1)*car.goBufferTime*2 + car.goBufferTime;
+			let count = Math.ceil(totalNeedVolume / car.load);
+			for (let i = 1; i <= count; i++) {
+				let time = (i - 1)*car.goBufferTime*2 + car.goBufferTime;
 				timeSerie.push(time);
 			}
 			// if (index === 0) {
@@ -420,15 +423,15 @@ module.exports = {
 		if (!totalNeedVolume || !bufferCars || !distances) {
 			return console.log(`getBufferNeedTimeByVolume Error`);
 		}
-		var self = this;
-		var initBufferCars = self.initBufferCars(bufferCars, distances);
+		let self = this;
+		let initBufferCars = self.initBufferCars(bufferCars, distances);
 		// 假设各车单独运送到达需求量货物时需要多少次，生成一个时间序列
-		var timeSerie = self.generatorTimeTicks(totalNeedVolume, initBufferCars);
+		let timeSerie = self.generatorTimeTicks(totalNeedVolume, initBufferCars);
 
-		var needTime = 0;
-		for (var i = 0; i < timeSerie.length; i++) {
-			var time = timeSerie[i]
-			var volume = self.getBufferVolumeByTime(time, bufferCars, distances);
+		let needTime = 0;
+		for (let i = 0; i < timeSerie.length; i++) {
+			let time = timeSerie[i]
+			let volume = self.getBufferVolumeByTime(time, bufferCars, distances);
 			if (totalNeedVolume < volume) {
 				needTime = time;
 				break;
@@ -447,20 +450,20 @@ module.exports = {
 		if (!carBufferRoutes || !bufferCars || !distances) {
 			return console.log(`fixedBufferRoutes Error`);
 		}
-		var self = this;
-		var resultCarBufferRoutes = [];
-		var bufferSupVolume = 0;
+		let self = this;
+		let resultCarBufferRoutes = [];
+		let bufferSupVolume = 0;
 
 		carBufferRoutes.sort(function(a, b) {
 			return a.time > b.time;
 		})
 
-		for (var i = 0; i < carBufferRoutes.length; i++) {
-			var brt = carBufferRoutes[i];
+		for (let i = 0; i < carBufferRoutes.length; i++) {
+			let brt = carBufferRoutes[i];
 			// 传入一个时间点获取bufferCars的量
-			var bufferVolume = self.getBufferVolumeByTime(brt.time, bufferCars, distances);
+			let bufferVolume = self.getBufferVolumeByTime(brt.time, bufferCars, distances);
 			// 这个时间点buffer的总需求量
-			var totalNeedVolume = bufferSupVolume + brt.bufferNeedVolume;
+			let totalNeedVolume = bufferSupVolume + brt.bufferNeedVolume;
 			// 如果总需求量小于等于这个时间buffer能提供的量
 			// console.log(bufferSupVolume, brt.bufferNeedVolume,totalNeedVolume, bufferVolume, brt.time)
 			if (totalNeedVolume <= bufferVolume) {
@@ -470,12 +473,11 @@ module.exports = {
 			} else {
 				// 需要进行时间延迟处理
 				// console.log("Need delay process");
-				var needTime = self.getBufferNeedTimeByVolume(totalNeedVolume, bufferCars, distances);
+				let needTime = self.getBufferNeedTimeByVolume(totalNeedVolume, bufferCars, distances);
 				// 如果在到达之前就能满足则等待时间为0，否则的话需要用needTime - brt.time;
+				let waitTime = 0;
 				if (needTime > brt.time) {
 					waitTime = needTime - brt.time;
-				} else {
-					waitTime = 0;
 				}
 				brt.waitTime = waitTime;
 				bufferSupVolume += brt.bufferNeedVolume;
@@ -489,9 +491,9 @@ module.exports = {
 			return console.log(`fixWaitTimeForGoToBufferCars Error,hasGoToBufferCars: ${hasGoToBufferCars}, fixedBufferRoutes: ${fixedBufferRoutes}`);
 		}
 		// 找出存在buffer的车辆
-		var fixWaitTimeCars = [];
+		let fixWaitTimeCars = [];
 		hasGoToBufferCars.forEach(function(car) {
-			var waitTimes = _.map(_.filter(fixedBufferRoutes, function(route){
+			let waitTimes = _.map(_.filter(fixedBufferRoutes, function(route){
 				return route.carCode === car.carCode;
 			}),"waitTime");
 			car.waitTimes = waitTimes;
@@ -501,14 +503,14 @@ module.exports = {
 		return fixWaitTimeCars;
 	},
 	getMaxTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances, loopFlag) {
-		var maxTime = 0;
-		var self = this;
-		var maxCar;
-		var allBufferNeedVolume = 0
+		let maxTime = 0;
+		let self = this;
+		let maxCar;
+		let allBufferNeedVolume = 0
 		fixWaitTimeForGoToBufferCars.forEach(function(car) {
-			var routeTime = self.calcRoutesTime(car.arrives, distances);
-			var waitTimes = _.sum(car.waitTimes);
-			var totalTime = routeTime + waitTimes;
+			let routeTime = self.calcRoutesTime(car.arrives, distances);
+			let waitTimes = _.sum(car.waitTimes);
+			let totalTime = routeTime + waitTimes;
 			if (totalTime > maxTime) {
 				maxTime = totalTime;
 				maxCar = car;
@@ -516,7 +518,7 @@ module.exports = {
 			allBufferNeedVolume += _.sum(car.bufferNeedVolumes);
 		});
 		noBufferCars.forEach(function(car) {
-			var routeTime = self.calcRoutesTime(car.arrives, distances);
+			let routeTime = self.calcRoutesTime(car.arrives, distances);
 			if (routeTime > maxTime) {
 				maxTime = routeTime;
 				maxCar = car
@@ -550,7 +552,7 @@ module.exports = {
 				flag: false
 			};
 		}
-		var supPointNames = _.map(bufferCars, 'ownerSupply');
+		let supPointNames = _.map(bufferCars, 'ownerSupply');
 		if (supPointNames.length < 2) {
 			return {
 				supPointNames: supPointNames,
@@ -563,11 +565,11 @@ module.exports = {
 		};
 	},
 	getTotalBufferNeedVolume(carBufferRoutes, supPointName){
-		var totalBufferVolume = 0;
+		let totalBufferVolume = 0;
 		carBufferRoutes.forEach(function(car) {
 			totalBufferVolume += car.bufferNeedVolume;
 		});
-		var supPoint = _.find(supPoints, function(point) {
+		let supPoint = _.find(supPoints, function(point) {
 			return point.name === supPointName;
 		});
 		if (!supPoint) {
@@ -596,27 +598,27 @@ module.exports = {
 	noBufferCars:
 	 */
 	calcVolumeExceptTime(fixWaitTimeForGoToBufferCars, noBufferCars, distances){
-		var result = 0;
+		let result = 0;
 		const self = this;
 		fixWaitTimeForGoToBufferCars.forEach(function(car) {
-			var arrives = car.arrives;
+			let arrives = car.arrives;
 			// 找出剔除供应点hebuffer的点
-			var filterArray = [config.bufferName, arrives[0]];
-			var filterPoint = _.filter(arrives, function(item){
+			let filterArray = [config.bufferName, arrives[0]];
+			let filterPoint = _.filter(arrives, function(item){
 				if (filterArray.indexOf(item) < 0) {
 					return true;
 				}
 				return false;
 			});
-			for (var j = 0; j < filterPoint.length; j++) {
-				var route = filterPoint[j];
+			for (let j = 0; j < filterPoint.length; j++) {
+				let route = filterPoint[j];
 				// 计算出到达此点的需求量以及能提供的量
-				var volume = car.perPointVolume[j];
+				let volume = car.perPointVolume[j];
 				// 计算出到达此点的时间
-				var routes = arrives.slice(0, _.indexOf(arrives, route, j) + 1);
-				var time = self.calcRoutesTime(routes, distances);
+				let routes = arrives.slice(0, _.indexOf(arrives, route, j) + 1);
+				let time = self.calcRoutesTime(routes, distances);
 				// 找出buffer, 需要加上在buffer等待的时间。
-				var buffers = _.filter(routes, function(bufferPoint){
+				let buffers = _.filter(routes, function(bufferPoint){
 					if (bufferPoint === config.bufferName) {
 						return true;
 					}
@@ -630,22 +632,22 @@ module.exports = {
 		});
 
 		noBufferCars.forEach(function(car) {
-			var arrives = car.arrives;
+			let arrives = car.arrives;
 			// 找出剔除供应点hebuffer的点
-			var filterArray = [config.bufferName, arrives[0]];
-			var filterPoint = _.filter(arrives, function(item){
+			let filterArray = [config.bufferName, arrives[0]];
+			let filterPoint = _.filter(arrives, function(item){
 				if (filterArray.indexOf(item) < 0) {
 					return true;
 				}
 				return false;
 			});
-			for (var j = 0; j < filterPoint.length; j++) {
-				var route = filterPoint[j];
+			for (let j = 0; j < filterPoint.length; j++) {
+				let route = filterPoint[j];
 				// 计算出到达此点的需求量以及能提供的量
-				var volume = car.perPointVolume[j];
+				let volume = car.perPointVolume[j];
 				// 计算出到达此点的时间
-				var routes = arrives.slice(0, _.indexOf(arrives, route, j) + 1);
-				var time = self.calcRoutesTime(routes, distances);
+				let routes = arrives.slice(0, _.indexOf(arrives, route, j) + 1);
+				let time = self.calcRoutesTime(routes, distances);
 				result += volume/time;
 			}
 		});
@@ -661,10 +663,10 @@ module.exports = {
 			console.log("routes length Error, routes length must greater than 2, routes:${routes}");
 			return 0;
 		}
-		var self = this;
-		var indexes = 1;
-		for (var i = 1; i < routes.length; i++) {
-			var safeIndex = self.getDistance(routes[i-1], routes[i], safeIndexes);
+		let self = this;
+		let indexes = 1;
+		for (let i = 1; i < routes.length; i++) {
+			let safeIndex = self.getDistance(routes[i-1], routes[i], safeIndexes);
 			if (!safeIndex) {
 				console.log(`Error, calcRoutesTime, safeIndex: ${safeIndex}, i-1: ${routes[i-1]}, i:${routes[i]}`);
 			} else {
@@ -676,13 +678,13 @@ module.exports = {
 	calcSafeIndexes(fixWaitTimeForGoToBufferCars, noBufferCars, safeIndexes){
 		// 根据路径进行计算除safeIndexes
 		const self = this;
-		var carsIndexes = [];
+		let carsIndexes = [];
 		fixWaitTimeForGoToBufferCars.forEach(function(car){
-			var indexes = self.calcRouteSafeIndexes(car.arrives, safeIndexes);
+			let indexes = self.calcRouteSafeIndexes(car.arrives, safeIndexes);
 			carsIndexes.push(indexes);
 		});
 		noBufferCars.forEach(function(car) {
-			var noBuffIndexes = self.calcRouteSafeIndexes(car.arrives, safeIndexes);
+			let noBuffIndexes = self.calcRouteSafeIndexes(car.arrives, safeIndexes);
 			carsIndexes.push(noBuffIndexes);
 		});
 		return _.min(carsIndexes);
