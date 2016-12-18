@@ -45,45 +45,45 @@ utils.csvToJsonTwo(safeindexesFile, function(err, joinIndexes) {
         let loopFlag = true;
         let annealDegree = config.annealDegree;
         let annealResult;
-        while(loopFlag) {
+        // while(loopFlag) {
             // 退火算法执行
-            if (finalResult.time) {
-                changeDegreeCount ++;
-                // console.log(finalResult.time, '====');
-                annealResult = ANutils.annealAlgorithm(finalResult, annealResult, initResult, annealDegree)
-                // console.log( annealResult.time, '-------');
-            }
+            // if (finalResult.time) {
+            //     changeDegreeCount ++;
+            //     // console.log(finalResult.time, '====');
+            //     annealResult = ANutils.annealAlgorithm(finalResult, annealResult, initResult, annealDegree)
+            //     // console.log(finalResult.time, annealResult.time, '-------');
+            // }
 
-            if (stopTime < 0) {
-                // superLogResult
-                console.log('往buffer运输的车辆:', superLogResult.bufferCars);
-                console.log('需要去buffer的车辆:', superLogResult.fixWaitTimeForGoToBufferCars);
-                console.log('不需要去buffer的车辆:', superLogResult.noBufferCars)
+            // if (stopTime < 0) {
+            //     // superLogResult
+            //     console.log('往buffer运输的车辆:', superLogResult.bufferCars);
+            //     console.log('需要去buffer的车辆:', superLogResult.fixWaitTimeForGoToBufferCars);
+            //     console.log('不需要去buffer的车辆:', superLogResult.noBufferCars)
                     
-                // 输出结果
-                console.log(annealResult);
-                // 停止迭代
-                return;
-            }
+            //     // 输出结果
+            //     console.log(annealResult);
+            //     // 停止迭代
+            //     return;
+            // }
 
-            if (changeDegreeCount >= config.iteratorTimes) {
-                // 降低退火温度
-                annealDegree = annealDegree * config.annealFactor;
-                changeDegreeCount = 0;
-                // 如果退火一次将次数递减一下
-                stopTime--;
-                // 输出迭代次数
-                if (stopTime % 50 === 0) {
-                    console.log(`迭代次数: ${stopTime}`);
-                }
-            }
+            // if (changeDegreeCount >= config.iteratorTimes) {
+            //     // 降低退火温度
+            //     annealDegree = annealDegree * config.annealFactor;
+            //     changeDegreeCount = 0;
+            //     // 如果退火一次将次数递减一下
+            //     stopTime--;
+            //     // 输出迭代次数
+            //     if (stopTime % 50 === 0) {
+            //         console.log(`迭代次数: ${stopTime}`);
+            //     }
+            // }
 
-            if (annealResult && annealResult.points) {
-                initResult = utils.iterationResult(annealResult.points, initCars);
-                while (_.uniq(_.map(initResult, "carCode")).length === initCars.length) {
-                    initResult = utils.iterationResult(annealResult.points, initCars);
-                }
-            }
+            // if (annealResult && annealResult.points) {
+            //     initResult = utils.iterationResult(annealResult.points, initCars);
+            //     while (_.uniq(_.map(initResult, "carCode")).length === initCars.length) {
+            //         initResult = utils.iterationResult(annealResult.points, initCars);
+            //     }
+            // }
 
             // init cars route,设置各车所要走的路径
             let cars = utils.initCarsRoutes(initCars, initResult);
@@ -114,11 +114,12 @@ utils.csvToJsonTwo(safeindexesFile, function(err, joinIndexes) {
             // 如果都是从同一个节点出来的则需要判断是否能满足所有的bufferneedvolume
             let canSupForBuffer = true;
             if (isAllFromOneSupPoint.flag) {
+                // console.log(carBufferRoutes, isAllFromOneSupPoint.supPointNames[0]);
                 canSupForBuffer = utils.getTotalBufferNeedVolume(carBufferRoutes, isAllFromOneSupPoint.supPointNames[0]);
             }
             // 如果不能满足到达buffer的点，进行下一次迭代
             if (!canSupForBuffer) {
-                continue;
+                // continue;
             }
             // 开始计算各车到buffer的时间序列
             // buffer 点的处理
@@ -146,12 +147,16 @@ utils.csvToJsonTwo(safeindexesFile, function(err, joinIndexes) {
             // 输出结果
             allResult.calcResult = allResult.time * config.timeIndex - allResult.volueDivideTime * config.volueDivideTimeIndex - allResult.safeIndex * config.safeIndex;
 
-            // console.log(allResult);
+            console.log(allResult);
 
-            // 退火算法赋值
+            // // 退火算法赋值
             superLogResult.bufferCars = bufferCars;
             superLogResult.fixWaitTimeForGoToBufferCars = fixWaitTimeForGoToBufferCars;
             superLogResult.noBufferCars = noBufferCars;
-        }
+            console.log('往buffer运输的车辆:', superLogResult.bufferCars);
+            console.log('需要去buffer的车辆:', superLogResult.fixWaitTimeForGoToBufferCars);
+            console.log('不需要去buffer的车辆:', superLogResult.noBufferCars)
+       
+        // }
     });
 });
