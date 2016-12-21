@@ -26,32 +26,32 @@ module.exports = [
 	},
 	{	
 		pCode: "P6",
-		carCode: "S1-C-1",
+		carCode: "S1-A-3",
 		step: 2,
 	},
 	{	
 		pCode: "P7",
-		carCode: "S1-C-1",
+		carCode: "S1-A-3",
 		step: 1,
 	},
 	{	
 		pCode: "P8",
-		carCode: "S2-A-1",
+		carCode: "S1-A-2",
 		step: 1,
 	},
 	{	
 		pCode: "P9",
-		carCode: "S2-A-1",
-		step: 3,
-	},
-	{	
-		pCode: "P10",
-		carCode: "S2-A-1",
+		carCode: "S1-A-2",
 		step: 2,
 	},
 	{	
-		pCode: "P11",
-		carCode: "S2-C-2",
+		pCode: "P10",
+		carCode: "S1-B-2",
 		step: 1,
 	},
+	{	
+		pCode: "P11",
+		carCode: "S1-B-2",
+		step: 2,
+	}
 ]

@@ -321,9 +321,7 @@ module.exports = {
 			bufferRoutes = bufferRoutes.concat(bfRoutes);
 		}
 		// 按照时间排序（升序）
-		bufferRoutes = bufferRoutes.sort(function(a, b){
-			return a.time > b.time;
-		});
+		bufferRoutes = _.sortBy(bufferRoutes, ['time', 'bufferNeedVolume'], ['asc', 'desc']);
 		return bufferRoutes;
 	},
 	initBufferCars(bufferCars, distances) {

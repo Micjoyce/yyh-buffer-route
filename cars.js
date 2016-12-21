@@ -45,12 +45,12 @@ module.exports = [
 		carCode: 'S1-A-3',
 		type: "A",
 		load: 9,
-		ownerSupply: "Supply2",
+		ownerSupply: "Supply1",
 	},
 	{
 		carCode: 'S1-B-2',
 		type: "A",
 		load: 7.2,
-		ownerSupply: "Supply2",
+		ownerSupply: "Supply1",
 	},
 ];
