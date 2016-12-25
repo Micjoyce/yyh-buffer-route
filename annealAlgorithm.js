@@ -4,27 +4,28 @@ let config = require('./config');
 module.exports = {
 	// 退火算法规则
 	// 按照一定的概率接受某个结果 e(-(T前-T后)/260)的温度
-	annealAlgorithm(finalResult, lastTimeResult, initResult, degree) {
+	annealAlgorithm(finalResult, annealResult, initResult, degree) {
 		if (!finalResult.time) {
 			return console.log(`annealAlogrithm Error: finalResult:${finalResult}`)
 		}
-		if (!lastTimeResult || !lastTimeResult.time) {
+		if (!annealResult || !annealResult.time) {
 			// return finalResult;
 			return JSON.parse(JSON.stringify(finalResult));
 		}
 		// 如果这一次的计算结果好，则使用此次的计算结果
 		let self = this;
-		if (finalResult.time <= lastTimeResult.time) {
+		if (finalResult.time <= annealResult.time) {
+			console.log(finalResult)
 			return JSON.parse(JSON.stringify(finalResult));;
 		} 
 		// // 如果此次比之前的结果大，就按照一定的概率接受某个结果 e(-(T前-T后)/260)的温度
-		// let powNum = -(finalResult.time - lastTimeResult.time)/degree;
+		// let powNum = -(finalResult.time - annealResult.time)/degree;
 		// let chancePercent = Math.pow(Math.E, powNum);
 		// let acceptFinaResult = self.acceptChance(chancePercent);
 		// if (acceptFinaResult) {
 		// 	return finalResult;
 		// }
-		return JSON.parse(JSON.stringify(lastTimeResult));;
+		return JSON.parse(JSON.stringify(annealResult));;
 	},
 	// 以一定的概率接受
 	acceptChance(chancePercent){
