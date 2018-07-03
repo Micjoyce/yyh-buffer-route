@@ -247,11 +247,19 @@ module.exports = {
 				car.bufferNeedVolumes.push(car.load);
 			}
 		} else {
-			car.volume = car.load;
-			car.supVolume += car.volume;
-			car.perPointVolume.push(car.volume);
-			car.notEnough -= car.load;
-			car.bufferNeedVolumes.push(car.load);
+			if (car.load > car.notEnough) {
+				car.volume = car.load - car.notEnough;
+				car.supVolume += car.volume;
+				car.perPointVolume.push(car.volume);
+				car.notEnough -= car.load;
+				car.bufferNeedVolumes.push(car.load);
+			} else {
+				car.volume = 0;
+				car.supVolume += car.volume;
+				car.perPointVolume.push(car.volume);
+				car.notEnough -= car.load;
+				car.bufferNeedVolumes.push(car.load);
+			}
 		}
 		car.lastFinshPoint = route;
 		return car;

@@ -117,9 +117,9 @@ utils.csvToJsonTwo(safeindexesFile, function(err, joinIndexes) {
                 canSupForBuffer = utils.getTotalBufferNeedVolume(carBufferRoutes, isAllFromOneSupPoint.supPointNames[0]);
             }
             // 如果不能满足到达buffer的点，进行下一次迭代
-            if (!canSupForBuffer) {
-                continue;
-            }
+            // if (!canSupForBuffer) {
+            //     continue;
+            // }
             // 开始计算各车到buffer的时间序列
             // buffer 点的处理
             // utils.refixeBufferRoutes(carBufferRoutes, bufferCars, distances);

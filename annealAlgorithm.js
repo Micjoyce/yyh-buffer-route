@@ -15,7 +15,7 @@ module.exports = {
 		// 如果这一次的计算结果好，则使用此次的计算结果
 		let self = this;
 		if (finalResult.time <= annealResult.time) {
-			console.log(finalResult)
+			// console.log(finalResult)
 			return JSON.parse(JSON.stringify(finalResult));;
 		} 
 		// // 如果此次比之前的结果大，就按照一定的概率接受某个结果 e(-(T前-T后)/260)的温度
